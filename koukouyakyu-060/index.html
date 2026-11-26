@@ -1,0 +1,133 @@
+<title>公立どうしの決勝</title>
+<style>
+:root{--bg:#f6f4f1;--panel:#fffefc;--ink:#1c1a19;--dim:#6e6862;--line:#e2ded7;--accent:#b8422f}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#17161a;--panel:#201e23;--ink:#ece8e4;--dim:#9b948d;--line:#33303a;--accent:#e0705a}}
+:root[data-theme="dark"]{--bg:#17161a;--panel:#201e23;--ink:#ece8e4;--dim:#9b948d;--line:#33303a;--accent:#e0705a}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);margin:0;-webkit-text-size-adjust:100%;
+  font:16px/1.7 -apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic UI",sans-serif}
+.wrap{max-width:1000px;margin:0 auto;padding:16px}
+h1{font-size:17px;margin:4px 0 14px;font-weight:600;letter-spacing:.02em}
+.meta{color:var(--dim);font-size:13px;font-weight:400;margin-left:8px}
+.stage{background:var(--panel);border:1px solid var(--line);border-radius:12px;position:relative;
+  min-height:40vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:46px 20px 26px;box-shadow:0 2px 14px rgba(0,0,0,.10)}
+#now{margin:0;text-align:center;white-space:pre-wrap;word-break:break-word;font-weight:700;
+  font-size:clamp(23px,5.4vw,42px);line-height:1.5;letter-spacing:.01em}
+#nextline{margin:16px 0 0;text-align:center;white-space:pre-wrap;word-break:break-word;
+  color:var(--dim);font-size:clamp(13px,2.8vw,17px);line-height:1.6}
+.badge{position:absolute;left:12px;top:12px;background:rgba(127,127,127,.16);color:var(--dim);
+  font-size:12px;padding:3px 9px;border-radius:20px;line-height:1.6;letter-spacing:.04em}
+.bar{display:flex;align-items:center;gap:10px;margin:12px 0 6px;flex-wrap:wrap}
+button{background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:8px;
+  padding:9px 14px;font-size:15px;cursor:pointer;font-family:inherit}
+button:active{transform:translateY(1px)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button.play{background:var(--accent);color:#fff;border-color:transparent;min-width:80px;font-weight:600}
+.time{font-variant-numeric:tabular-nums;color:var(--dim);font-size:13px;margin-left:auto}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.marks{position:relative;height:7px;margin:2px 0 14px}
+.marks i{position:absolute;top:0;width:1px;height:7px;background:var(--line)}
+.tabs{display:flex;gap:6px;margin:18px 0 10px;border-bottom:1px solid var(--line)}
+.tabs button{border:0;border-bottom:2px solid transparent;border-radius:0;background:none;
+  color:var(--ink);padding:7px 12px;font-weight:600}
+.list{max-height:46vh;overflow:auto;border:1px solid var(--line);border-radius:10px;background:var(--panel);
+  -webkit-overflow-scrolling:touch}
+.row{display:flex;gap:12px;padding:11px 14px;border-bottom:1px solid var(--line);cursor:pointer}
+.row:last-child{border-bottom:0}
+.row:hover{background:rgba(127,127,127,.07)}
+.row.on{background:rgba(184,66,47,.12)}
+.row b{color:var(--dim);font-variant-numeric:tabular-nums;font-weight:500;font-size:13px;
+  min-width:48px;flex:none;padding-top:2px}
+.row span{white-space:pre-wrap;flex:1;font-size:16px;line-height:1.65}
+.tip{color:var(--dim);font-size:12.5px;margin:10px 2px 0}
+@media(max-width:620px){.wrap{padding:10px}.time{font-size:12px}
+  .bar button{padding:9px 11px;font-size:14px}.stage{padding:42px 14px 22px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+<div class="wrap">
+<h1 id="ttl"></h1>
+<div class="stage"><div class="badge" id="bdg"></div>
+  <p id="now"></p><p id="nextline"></p></div>
+<div class="bar">
+  <button class="play" id="pp">▶ 再生</button>
+  <button id="pv">◀ 前の字幕</button>
+  <button id="nx">次の字幕 ▶</button>
+  <button id="sp">等速</button>
+  <span class="time" id="tm">0:00 / 0:00</span>
+</div>
+<input type="range" id="sk" min="0" max="1000" value="0">
+<div class="marks" id="mk"></div>
+<div class="tabs"><button class="on">字幕</button></div>
+<div class="list" id="subs"></div>
+<p class="tip">スペース＝再生/停止　←→＝5秒送り　↑↓＝字幕送り。字幕をタップするとそこへ飛びます。</p>
+</div>
+<audio id="a" src="audio.mp3" preload="auto"></audio>
+<script>
+const D={"name": "公立どうしの決勝", "file": "060_編集用", "dur": 626.6333125, "segs": [], "subs": [{"t": 0.0, "x": "2026年の甲子園って、決勝は\nどんな組み合わせだったかしら？"}, {"t": 4.3, "x": "夏は智辯和歌山が健大高崎に4対3。"}, {"t": 7.083333333333333, "x": "春は大阪桐蔭が智辯学園に7対3で勝った。"}, {"t": 10.366666666666667, "x": "決勝に出た4つの学校は、どれも私立だ。"}, {"t": 13.35, "x": "春も夏も、私立どうしだったわけね。"}, {"t": 15.933333333333334, "x": "それだけではない。表を数えると、\n2019年の夏から13回続けて決勝は私立どうしだ。"}, {"t": 22.0, "x": "13回も？ ずっと私立どうしなの？"}, {"t": 24.483333333333334, "x": "そうだ。では決勝が公立どうしだった最後はいつか。"}, {"t": 27.683333333333334, "x": "1996年の夏、愛媛の松山商と熊本の熊本工の決勝だ。"}, {"t": 32.916666666666664, "x": "2026年から数えると、もう30年前になる。"}, {"t": 36.5, "x": "30年も公立どうしの決勝が無いなんて。"}, {"t": 39.25, "x": "じゃあ、公立どうしの決勝はこれまでに\n何回あって、どこで止まったのかしら。"}, {"t": 43.85, "x": "日本高野連の出場校の一覧と大会小史、\n記録のサイトの表を数えていこう。"}, {"t": 48.88333333333333, "x": "その前にチャンネル登録と\n高評価をしてもらえるとうれしい。"}, {"t": 52.31666666666667, "x": "押してもらえたら私もがんばれるわ。"}, {"t": 55.03333333333333, "x": "まず、どこからどこまで数えるの？"}, {"t": 57.233333333333334, "x": "1948年の春から、2026年の夏までだ。"}, {"t": 61.36666666666667, "x": "大会小史によると、1948年に学制改革があった。"}, {"t": 65.78333333333333, "x": "春の大会は名前を変えて\n「第一回選抜高校野球大会」とした。"}, {"t": 70.26666666666667, "x": "夏の大会も名前を\n「全国高等学校野球選手権大会」と改めた。"}, {"t": 75.26666666666667, "x": "中学校の大会が、高校の大会になった年なんだ。"}, {"t": 78.86666666666666, "x": "そうだ。だから\n高校の大会になってからの決勝を数える。"}, {"t": 82.43333333333334, "x": "2020年は春も夏も中止になった。"}, {"t": 84.9, "x": "大会小史にそう書いてある。"}, {"t": 86.7, "x": "それを引くと、春が78回、夏が78回。"}, {"t": 90.16666666666667, "x": "合わせて156回の決勝になる。"}, {"t": 92.73333333333333, "x": "156回。思ったより多いわ。"}, {"t": 94.95, "x": "公立か私立かは、どうやって分けたの？"}, {"t": 97.51666666666667, "x": "記録のサイトの学校のページに、\n公立か私立かが1校ずつ書いてある。"}, {"t": 101.8, "x": "県立や市立の学校が公立だ。"}, {"t": 103.86666666666666, "x": "決勝に出た学校をそれで1つずつ分けた。"}, {"t": 106.6, "x": "引き分けで再試合になった決勝は、\n1つの大会として1回と数えている。"}, {"t": 111.86666666666666, "x": "では答えだ。表を数えると、\n公立どうしの決勝は156回のうち31回。"}, {"t": 117.18333333333334, "x": "31回？ 5回に1回くらいはあったのね。"}, {"t": 120.13333333333334, "x": "ああ。春が15回で夏が16回だ。"}, {"t": 122.63333333333334, "x": "公立と私立が当たった決勝は49回。"}, {"t": 125.43333333333334, "x": "私立どうしの決勝は76回で、いちばん多い。"}, {"t": 128.66666666666666, "x": "76回ってことは、半分ぐらいが私立どうしなの？"}, {"t": 132.2, "x": "そうだ。だが最初から私立どうしが\n多かったわけではない。"}, {"t": 135.5, "x": "始まりのころの表は、まるで違う形をしている。"}, {"t": 139.18333333333334, "x": "1948年の春、高校の大会になって\n最初の決勝は京都の学校どうしだった。"}, {"t": 144.93333333333334, "x": "大会小史には\n「京都一商が京都二商を降した」とある。"}, {"t": 148.66666666666666, "x": "延長11回、1対0の試合だ。"}, {"t": 150.95, "x": "どちらも京都の公立の商業学校だった。"}, {"t": 153.83333333333334, "x": "同じ府の学校どうしで決勝をしたの？"}, {"t": 156.28333333333333, "x": "ああ。公立どうしの31回の中で、\n同じ都道府県どうしはこの1回だけだ。"}, {"t": 161.23333333333332, "x": "その夏は福岡の小倉が和歌山の桐蔭に1対0。"}, {"t": 164.6, "x": "1949年の春は大阪の北野が兵庫の芦屋に6対4。"}, {"t": 168.76666666666668, "x": "夏は神奈川の湘南が岐阜に5対3。"}, {"t": 171.35, "x": "1950年の春は静岡の韮山が高知商に4対1。"}, {"t": 175.33333333333334, "x": "夏は愛媛の松山東が徳島の鳴門に12対8。"}, {"t": 178.83333333333334, "x": "大会小史には「四国同士の決勝」とある。"}, {"t": 181.88333333333333, "x": "1951年の春は、その鳴門が\n兵庫の鳴尾に3対2で勝った。"}, {"t": 186.58333333333334, "x": "ここまで、全部公立どうしってこと？"}, {"t": 189.08333333333334, "x": "そうだ。最初の7回の決勝は、\n7回とも公立どうしだった。"}, {"t": 193.2, "x": "途切れたのは1951年の夏だ。"}, {"t": 195.73333333333332, "x": "京都の平安が埼玉の熊谷に7対4で勝った。"}, {"t": 199.05, "x": "平安は私立だ。1948年からの表で、\n初めて決勝に私立の学校が立った。"}, {"t": 205.03333333333333, "x": "それでも、相手の熊谷は公立の学校でしょう？"}, {"t": 208.61666666666667, "x": "ああ。そして私立どうしの\n決勝は、なかなか来なかった。"}, {"t": 212.21666666666667, "x": "初めて私立どうしになったのはいつ？"}, {"t": 214.53333333333333, "x": "1962年の春だ。栃木の作新学院が\n東京の日大三に1対0で勝った。"}, {"t": 220.33333333333334, "x": "1948年の春からここまでに、決勝は28回あった。"}, {"t": 224.76666666666668, "x": "その28回は、どれも少なくとも\n片方が公立の学校だった。"}, {"t": 229.13333333333333, "x": "14年のあいだ、決勝にはいつも公立がいたわけか。"}, {"t": 232.53333333333333, "x": "ああ。1950年代の20回では、\n私立どうしの決勝は1回もない。"}, {"t": 237.26666666666668, "x": "公立どうしが9回、公立と私立が11回だった。"}, {"t": 241.31666666666666, "x": "そこから先はどう変わっていったの？"}, {"t": 243.5, "x": "10年ごとに、20回の決勝を分けてみる。"}, {"t": 246.28333333333333, "x": "1960年代は公立どうしが6回。"}, {"t": 249.01666666666668, "x": "私立どうしが4回。"}, {"t": 250.45, "x": "春と夏の決勝がそろって\n公立どうしだったのは、1965年が最後だ。"}, {"t": 255.53333333333333, "x": "1970年代は公立どうしが7回。"}, {"t": 258.3333333333333, "x": "私立どうしが6回だ。"}, {"t": 260.05, "x": "70年代はまだ公立どうしの方が多いわ。"}, {"t": 262.9166666666667, "x": "ああ。だが1980年代で入れかわる。"}, {"t": 265.56666666666666, "x": "公立どうしが3回。私立どうしが8回。"}, {"t": 268.3666666666667, "x": "1990年代は公立どうしが2回で、\n私立どうしが13回になった。"}, {"t": 273.26666666666665, "x": "2000年代と2010年代は、公立どうしが0回だ。"}, {"t": 276.81666666666666, "x": "私立どうしは2000年代が16回、2010年代が17回。"}, {"t": 281.0, "x": "20回のうち17回も私立どうしなの？"}, {"t": 283.75, "x": "そうだ。2020年代は、\nここまでの12回が全部私立どうしだ。"}, {"t": 288.1333333333333, "x": "表の上と下で、公立と私立が\nそっくり入れかわったみたい。"}, {"t": 292.26666666666665, "x": "公立どうしの決勝に何度も出た学校はあるの？"}, {"t": 295.28333333333336, "x": "いちばん多いのは徳島の池田で4回だ。"}, {"t": 297.81666666666666, "x": "1979年の夏は和歌山の箕島に3対4で負けた。"}, {"t": 302.0833333333333, "x": "そのあと1982年の夏、1983年の春、\n1986年の春と3回勝っている。"}, {"t": 309.5833333333333, "x": "1度負けてから、3回続けて勝ったんだ。"}, {"t": 312.46666666666664, "x": "次が3回で、徳島の鳴門と千葉の銚子商だ。"}, {"t": 315.71666666666664, "x": "鳴門は1950年の夏に負け、1951年の春に\n勝ち、1952年の春に負けた。"}, {"t": 322.6166666666667, "x": "銚子商は1965年の夏に負け、\n1974年の夏に勝ち、1995年の春に負けた。"}, {"t": 330.1666666666667, "x": "銚子商は30年のあいだに3回も出ているのね。"}, {"t": 333.3333333333333, "x": "広島の尾道商は2回出て、2回とも負けている。"}, {"t": 336.6166666666667, "x": "1964年の春は徳島海南に2対3。"}, {"t": 339.8666666666667, "x": "1968年の春は埼玉の大宮工に2対3だ。"}, {"t": 343.8333333333333, "x": "大会小史は1964年を\n「史上初の初出場同士の優勝戦」と書いている。"}, {"t": 349.48333333333335, "x": "1968年の大宮工も、初出場で優勝した学校だ。"}, {"t": 354.1166666666667, "x": "2回とも、初めて来た学校に1点差で負けたなんて。"}, {"t": 358.18333333333334, "x": "県で数えるとどうなるの？"}, {"t": 359.8833333333333, "x": "表を数えると、いちばん多いのは徳島で9回だ。"}, {"t": 362.98333333333335, "x": "池田が4回、鳴門が3回、\n徳島商と徳島海南が1回ずつ。"}, {"t": 367.51666666666665, "x": "9回のうち5回で、徳島の学校が勝っている。"}, {"t": 370.71666666666664, "x": "31回の決勝の3つに1つ近くに、\n徳島の学校がいたのね。"}, {"t": 375.3666666666667, "x": "ああ。次が愛媛で5回だ。"}, {"t": 377.0, "x": "松山商が2回、松山東と西条と新居浜商が1回ずつ。"}, {"t": 381.25, "x": "愛媛の学校はそのうち4回勝っている。"}, {"t": 383.8333333333333, "x": "四国の県が上に並ぶんだ。"}, {"t": 385.8, "x": "そうだ。1996年の最後の決勝も、\n勝ったのは愛媛の松山商だった。"}, {"t": 391.78333333333336, "x": "公立どうしの決勝には、どんな学校が出ていたの？"}, {"t": 395.03333333333336, "x": "31回の決勝には、のべ62校が出ている。"}, {"t": 398.31666666666666, "x": "表を数えると、そのうち27校が\n商業か工業の学校だった。"}, {"t": 402.53333333333336, "x": "半分近くが、商業か工業の学校ってこと？"}, {"t": 405.76666666666665, "x": "ああ。2校とも商業か工業だった決勝は7回ある。"}, {"t": 409.1, "x": "1948年春の京都一商と京都二商。"}, {"t": 412.31666666666666, "x": "1965年春の岡山東商と市和歌山商。"}, {"t": 416.1333333333333, "x": "1965年夏の三池工と銚子商。"}, {"t": 418.96666666666664, "x": "1968年春の大宮工と尾道商。"}, {"t": 422.26666666666665, "x": "1974年夏の銚子商と山口の防府商。"}, {"t": 425.68333333333334, "x": "1978年春の浜松商と福井商。"}, {"t": 429.06666666666666, "x": "そして1996年夏の松山商と熊本工だ。"}, {"t": 433.1, "x": "最後の決勝も、商業と工業の学校どうしだったんだ。"}, {"t": 436.7, "x": "大会小史は1965年の夏を\n「三池工が工業校初の優勝」と書いている。"}, {"t": 442.3666666666667, "x": "工業の学校が初めて勝った\n決勝も、公立どうしだったわけね。"}, {"t": 447.0, "x": "公立どうしの決勝は、どんな試合が多かったの？"}, {"t": 450.1, "x": "31回のうち、1点差で決まったのは11回だ。"}, {"t": 453.48333333333335, "x": "1960年の春は、香川の高松商が\n鳥取の米子東に9回の裏の1点で2対1。"}, {"t": 459.76666666666665, "x": "大会小史は「\n優勝戦史上初のサヨナラ本塁打」と書いている。"}, {"t": 463.95, "x": "1969年の夏は、松山商と青森の三沢の決勝だった。"}, {"t": 468.6333333333333, "x": "記録のサイトの表では、18回まで0対0。"}, {"t": 471.6, "x": "再試合で松山商が4対2で勝った。"}, {"t": 474.1333333333333, "x": "大会小史には「大会史上初の、\n決勝引き分け再試合」とある。"}, {"t": 478.6166666666667, "x": "決勝を2回も戦ったなんて。"}, {"t": 480.76666666666665, "x": "1975年の夏は千葉の習志野が愛媛の新居浜商に\n5対4。これも9回の裏の1点で決まった。"}, {"t": 487.53333333333336, "x": "最後の回で決まった試合が、いくつもあるわ。"}, {"t": 490.8666666666667, "x": "公立どうしの決勝は、終わりのほうはどうだったの？"}, {"t": 493.95, "x": "1986年の春、池田が\n栃木の宇都宮南に7対1で勝った。"}, {"t": 499.05, "x": "大会小史には「池田が\n初陣の宇都宮南に打ち勝ち」とある。"}, {"t": 503.18333333333334, "x": "そこから次の公立どうしまで、\n間に17回の決勝があった。"}, {"t": 507.31666666666666, "x": "17回のあいだ、1度も無かったの？"}, {"t": 509.9, "x": "そうだ。次は1995年の春。"}, {"t": 512.4833333333333, "x": "香川の観音寺中央が銚子商に4対0で勝った。"}, {"t": 515.7833333333333, "x": "そして1996年の夏。"}, {"t": 518.05, "x": "松山商が熊本工に延長11回、6対3で勝った。"}, {"t": 521.9666666666667, "x": "大会小史はこの決勝を\n「古豪対決の決勝」と書いている。"}, {"t": 525.95, "x": "その次の公立どうしは、まだ来ていないのね。"}, {"t": 529.4, "x": "1996年のあと、決勝に公立の学校は出ているの？"}, {"t": 533.65, "x": "1997年の春から2026年の夏まで、\n決勝は58回あった。"}, {"t": 539.1, "x": "表を数えると、そのうち公立の学校が\n決勝に立ったのは8回だ。"}, {"t": 543.3, "x": "8回とも、相手は私立の学校だった。"}, {"t": 545.9333333333333, "x": "優勝したのは2007年の夏の佐賀北と、\n2009年の春の長崎の清峰の2回。"}, {"t": 551.5, "x": "残りの6回は準優勝だった。"}, {"t": 553.6833333333333, "x": "準優勝の6回はどこの学校？"}, {"t": 555.9, "x": "1999年春の水戸商、2002年春の鳴門工、\n2006年春の清峰、2016年春の高松商。"}, {"t": 563.6833333333333, "x": "それに2018年夏の秋田の金足農、\n2019年春の千葉の習志野だ。"}, {"t": 568.9833333333333, "x": "最後に公立が決勝に出たのは、2019年の春か。"}, {"t": 572.7666666666667, "x": "ああ。習志野は愛知の東邦に0対6で負けた。"}, {"t": 575.8166666666667, "x": "そのあと、2019年の夏から\n2026年の夏までの13回は、決勝の2校とも私立だ。"}, {"t": 582.3166666666667, "x": "最初の話の13回につながるわけね。"}, {"t": 585.6, "x": "最初の問いに戻るけど、\n公立どうしの決勝は何回あったの？"}, {"t": 589.5, "x": "1948年から\n2026年までの156回の決勝のうち、31回だ。"}, {"t": 595.45, "x": "最初の7回は、7回とも公立どうしだった。"}, {"t": 598.6833333333333, "x": "じゃあ、どこで止まったの？"}, {"t": 600.35, "x": "1980年代から減って、1996年の夏の松山商と\n熊本工が最後になった。"}, {"t": 606.9166666666666, "x": "そのあとの58回には、公立どうしの決勝は1度もない。"}, {"t": 610.75, "x": "最後の公立どうしから、もう30年たったんだ。"}, {"t": 613.9333333333333, "x": "そうだ。いちばん多く出た県は\n徳島の9回、学校では池田の4回だ。"}, {"t": 618.6333333333333, "x": "32回目がいつ来るのか、気になるところね。"}, {"t": 621.7, "x": "見てくれてありがとう。"}, {"t": 622.7833333333333, "x": "高評価とチャンネル登録で、次の回でまた会おう。"}], "w": 720, "h": 405, "n_cuts": 0, "noimage": true};
+const a=document.getElementById('a');
+const now=document.getElementById('now'), nl=document.getElementById('nextline');
+const pp=document.getElementById('pp'), sk=document.getElementById('sk');
+const tm=document.getElementById('tm'), bdg=document.getElementById('bdg');
+const SMOOTH=matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth';
+document.getElementById('ttl').innerHTML=D.name+
+  '<span class="meta">'+fmt(D.dur)+'　字幕'+D.subs.length+'　（音声＋字幕だけ）</span>';
+
+function fmt(s){s=Math.max(0,s|0);return (s/60|0)+':'+String(s%60).padStart(2,'0')}
+function subIdx(t){let lo=0,hi=D.subs.length-1,r=-1;
+  while(lo<=hi){const m=(lo+hi)>>1; if(D.subs[m].t<=t){r=m;lo=m+1}else hi=m-1} return r}
+
+let cur=-2;
+function paint(t){
+  const i=subIdx(t);
+  if(i!==cur){cur=i;
+    now.textContent = i<0 ? (D.subs.length?'（ここはまだ字幕がありません）'
+                                          :'（この回に字幕はありません）')
+                         : D.subs[i].x;
+    const n=D.subs[i+1]; nl.textContent = n ? '次　'+n.x : '';
+    bdg.textContent = D.subs.length ? '字幕 '+(i+1)+' / '+D.subs.length : '字幕なし';
+    mark('subs',i);
+  }
+  tm.textContent=fmt(t)+' / '+fmt(D.dur);
+  if(!sk.dragging) sk.value=Math.round(t/D.dur*1000);
+}
+function mark(pane,i){
+  const el=document.getElementById(pane);
+  if(el.dataset.on==i) return; el.dataset.on=i;
+  el.querySelectorAll('.on').forEach(x=>x.classList.remove('on'));
+  const t=el.children[i]; if(!t) return; t.classList.add('on');
+  if(!el.hidden){const r=t.offsetTop-el.clientHeight/2; el.scrollTo({top:r,behavior:SMOOTH})}
+}
+
+D.subs.forEach(s=>{const d=document.createElement('div');d.className='row';
+  d.innerHTML='<b></b><span></span>';
+  d.querySelector('b').textContent=fmt(s.t);
+  d.querySelector('span').textContent=s.x;
+  d.onclick=()=>go(s.t); document.getElementById('subs').appendChild(d)});
+const mk=document.getElementById('mk');
+D.subs.forEach(s=>{const i=document.createElement('i');
+  i.style.left=(s.t/D.dur*100)+'%'; mk.appendChild(i)});
+
+function go(t){a.currentTime=Math.min(Math.max(0,t)+0.01,Math.max(0.05,D.dur-0.05)); paint(a.currentTime)}
+pp.onclick=()=>a.paused?a.play():a.pause();
+const SPEEDS=[1,1.25,1.5,1.75,2,3,0.75],SPN=['等速','1.25倍','1.5倍','1.75倍','2倍','3倍','0.75倍'];
+let si=0; const sp=document.getElementById('sp');
+sp.onclick=()=>{si=(si+1)%SPEEDS.length; a.playbackRate=SPEEDS[si];
+  a.preservesPitch=a.mozPreservesPitch=a.webkitPreservesPitch=true; sp.textContent=SPN[si]};
+a.onplay=()=>pp.textContent='❚❚ 停止'; a.onpause=()=>pp.textContent='▶ 再生';
+a.ontimeupdate=()=>paint(a.currentTime);
+sk.oninput=()=>{sk.dragging=1; go(sk.value/1000*D.dur)};
+sk.onchange=()=>sk.dragging=0;
+document.getElementById('pv').onclick=()=>{const i=subIdx(a.currentTime);
+  go(i>0?D.subs[i-1].t:0)};
+document.getElementById('nx').onclick=()=>{const i=subIdx(a.currentTime);
+  if(i+1<D.subs.length) go(D.subs[i+1].t)};
+addEventListener('keydown',e=>{const k=e.key;
+  if(k===' '){e.preventDefault();pp.onclick()}
+  else if(k==='ArrowRight')go(a.currentTime+5); else if(k==='ArrowLeft')go(a.currentTime-5);
+  else if(k==='ArrowDown'){e.preventDefault();document.getElementById('nx').onclick()}
+  else if(k==='ArrowUp'){e.preventDefault();document.getElementById('pv').onclick()}
+  else if(k==='s'||k==='S')sp.onclick()});
+paint(0);
+</script>
