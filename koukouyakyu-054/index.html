@@ -1,0 +1,133 @@
+<title>県岐阜商</title>
+<style>
+:root{--bg:#f6f4f1;--panel:#fffefc;--ink:#1c1a19;--dim:#6e6862;--line:#e2ded7;--accent:#b8422f}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#17161a;--panel:#201e23;--ink:#ece8e4;--dim:#9b948d;--line:#33303a;--accent:#e0705a}}
+:root[data-theme="dark"]{--bg:#17161a;--panel:#201e23;--ink:#ece8e4;--dim:#9b948d;--line:#33303a;--accent:#e0705a}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);margin:0;-webkit-text-size-adjust:100%;
+  font:16px/1.7 -apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic UI",sans-serif}
+.wrap{max-width:1000px;margin:0 auto;padding:16px}
+h1{font-size:17px;margin:4px 0 14px;font-weight:600;letter-spacing:.02em}
+.meta{color:var(--dim);font-size:13px;font-weight:400;margin-left:8px}
+.stage{background:var(--panel);border:1px solid var(--line);border-radius:12px;position:relative;
+  min-height:40vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:46px 20px 26px;box-shadow:0 2px 14px rgba(0,0,0,.10)}
+#now{margin:0;text-align:center;white-space:pre-wrap;word-break:break-word;font-weight:700;
+  font-size:clamp(23px,5.4vw,42px);line-height:1.5;letter-spacing:.01em}
+#nextline{margin:16px 0 0;text-align:center;white-space:pre-wrap;word-break:break-word;
+  color:var(--dim);font-size:clamp(13px,2.8vw,17px);line-height:1.6}
+.badge{position:absolute;left:12px;top:12px;background:rgba(127,127,127,.16);color:var(--dim);
+  font-size:12px;padding:3px 9px;border-radius:20px;line-height:1.6;letter-spacing:.04em}
+.bar{display:flex;align-items:center;gap:10px;margin:12px 0 6px;flex-wrap:wrap}
+button{background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:8px;
+  padding:9px 14px;font-size:15px;cursor:pointer;font-family:inherit}
+button:active{transform:translateY(1px)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button.play{background:var(--accent);color:#fff;border-color:transparent;min-width:80px;font-weight:600}
+.time{font-variant-numeric:tabular-nums;color:var(--dim);font-size:13px;margin-left:auto}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.marks{position:relative;height:7px;margin:2px 0 14px}
+.marks i{position:absolute;top:0;width:1px;height:7px;background:var(--line)}
+.tabs{display:flex;gap:6px;margin:18px 0 10px;border-bottom:1px solid var(--line)}
+.tabs button{border:0;border-bottom:2px solid transparent;border-radius:0;background:none;
+  color:var(--ink);padding:7px 12px;font-weight:600}
+.list{max-height:46vh;overflow:auto;border:1px solid var(--line);border-radius:10px;background:var(--panel);
+  -webkit-overflow-scrolling:touch}
+.row{display:flex;gap:12px;padding:11px 14px;border-bottom:1px solid var(--line);cursor:pointer}
+.row:last-child{border-bottom:0}
+.row:hover{background:rgba(127,127,127,.07)}
+.row.on{background:rgba(184,66,47,.12)}
+.row b{color:var(--dim);font-variant-numeric:tabular-nums;font-weight:500;font-size:13px;
+  min-width:48px;flex:none;padding-top:2px}
+.row span{white-space:pre-wrap;flex:1;font-size:16px;line-height:1.65}
+.tip{color:var(--dim);font-size:12.5px;margin:10px 2px 0}
+@media(max-width:620px){.wrap{padding:10px}.time{font-size:12px}
+  .bar button{padding:9px 11px;font-size:14px}.stage{padding:42px 14px 22px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+<div class="wrap">
+<h1 id="ttl"></h1>
+<div class="stage"><div class="badge" id="bdg"></div>
+  <p id="now"></p><p id="nextline"></p></div>
+<div class="bar">
+  <button class="play" id="pp">▶ 再生</button>
+  <button id="pv">◀ 前の字幕</button>
+  <button id="nx">次の字幕 ▶</button>
+  <button id="sp">等速</button>
+  <span class="time" id="tm">0:00 / 0:00</span>
+</div>
+<input type="range" id="sk" min="0" max="1000" value="0">
+<div class="marks" id="mk"></div>
+<div class="tabs"><button class="on">字幕</button></div>
+<div class="list" id="subs"></div>
+<p class="tip">スペース＝再生/停止　←→＝5秒送り　↑↓＝字幕送り。字幕をタップするとそこへ飛びます。</p>
+</div>
+<audio id="a" src="audio.mp3" preload="auto"></audio>
+<script>
+const D={"name": "県岐阜商", "file": "054_編集用", "dur": 632.5833125, "segs": [], "subs": [{"t": 0.0, "x": "ねえ、春のセンバツで優勝した\n学校は、夏も勝ち続けるものなの？"}, {"t": 4.366666666666666, "x": "それは学校による。2025年の横浜は、\n春に優勝して夏の甲子園にも来ていた。"}, {"t": 10.083333333333334, "x": "じゃあ、夏もそのまま勝ち進んだの？"}, {"t": 12.5, "x": "準々決勝で止まった。"}, {"t": 13.966666666666667, "x": "延長11回、7対8のサヨナラ負けだ。"}, {"t": 17.05, "x": "止めたのは、どこの学校？"}, {"t": 18.9, "x": "岐阜の県立の商業高校、県岐阜商だ。"}, {"t": 21.8, "x": "へえ。公立の学校が、春の王者に勝ったってこと？"}, {"t": 25.216666666666665, "x": "ああ。しかもこの学校は、90年ほど\n前に4度も日本一になっている。"}, {"t": 29.833333333333332, "x": "90年前に4回も？　ずいぶん昔の話ね。"}, {"t": 33.11666666666667, "x": "戦争の前の8年で、春に3度と夏に1度だ。"}, {"t": 36.583333333333336, "x": "そんな昔に強かった学校が、\nどうして今も勝てるのかしら。"}, {"t": 40.46666666666667, "x": "今回は高野連の表と、試合の記録で順に見ていく。"}, {"t": 43.833333333333336, "x": "始める前に、チャンネル登録と高評価をお願いしたい。"}, {"t": 47.25, "x": "よろしくね。"}, {"t": 48.733333333333334, "x": "県岐阜商は、どこにある学校なの？"}, {"t": 51.13333333333333, "x": "岐阜市の則武という所にある、県立の商業高校だ。"}, {"t": 54.733333333333334, "x": "進学の案内のサイトには、1904年に\n岐阜市立の商業学校として開いたとある。"}, {"t": 60.31666666666667, "x": "最初は市の学校だったんだ。"}, {"t": 62.266666666666666, "x": "そうだ。今の正式な名前は、\n岐阜県立岐阜商業高等学校だ。"}, {"t": 66.55, "x": "岐阜市には、市立の岐阜商業高校もある。"}, {"t": 69.38333333333334, "x": "同じ名前の学校が2つあるってこと？"}, {"t": 71.93333333333334, "x": "ああ。だから県立のほうを、\n県岐阜商と書いて分けている。"}, {"t": 75.33333333333333, "x": "戦争の前の表では、ただの岐阜商と書いてある。"}, {"t": 78.41666666666667, "x": "じゃあ表の岐阜商は、今の県岐阜商のことなのね。"}, {"t": 81.6, "x": "そうなる。まずはその岐阜商が、\n春の大会に出続けた話からだ。"}, {"t": 86.46666666666667, "x": "高野連の春のセンバツの表を見てみよう。"}, {"t": 88.85, "x": "1932年の第9回大会。"}, {"t": 91.35, "x": "岐阜県の欄に岐阜商の名前がある。"}, {"t": 93.58333333333333, "x": "そこから第20回大会まで、\n岐阜県の欄は毎回岐阜商だ。"}, {"t": 97.63333333333334, "x": "第9回から第20回まで？　何回になるの？"}, {"t": 100.8, "x": "12回だ。春の大会は1942年から\n1946年まで、戦争で止まっている。"}, {"t": 107.1, "x": "その前の10回と、戦争のあとの2回。"}, {"t": 109.6, "x": "全部で12回続けて出た。"}, {"t": 111.65, "x": "止まった前もあとも、ずっと出ていたわけか。"}, {"t": 114.4, "x": "ああ。そして2度目の春だった\n1933年に、初めての日本一が来る。"}, {"t": 119.63333333333334, "x": "出始めて2回目で優勝なの？"}, {"t": 121.7, "x": "そうだ。この年の出場は32校だった。"}, {"t": 124.6, "x": "1回戦は静岡中に6対5。"}, {"t": 126.6, "x": "2回戦は鳥取一中に5対3だ。"}, {"t": 129.16666666666666, "x": "最初の2つは、どっちも2点差までだわ。"}, {"t": 131.95, "x": "準々決勝は海草中に3対0。"}, {"t": 134.25, "x": "準決勝は広島商に4対0。"}, {"t": 136.6, "x": "決勝は兵庫の明石中だ。"}, {"t": 138.23333333333332, "x": "8回に1点を入れて、1対0で勝った。"}, {"t": 141.16666666666666, "x": "最後の3試合は、相手に1点も取られなかったのね。"}, {"t": 144.58333333333334, "x": "そうなる。点の少ない試合を守り切った春だった。"}, {"t": 148.31666666666666, "x": "2年後の1935年の春。"}, {"t": 150.58333333333334, "x": "岐阜商はまた決勝まで来た。"}, {"t": 152.51666666666668, "x": "準決勝の相手は愛知商だ。"}, {"t": 154.26666666666668, "x": "最初の試合は1対1で決着がつかなかった。"}, {"t": 157.46666666666667, "x": "引き分けたの？　そのあとはどうしたの？"}, {"t": 159.85, "x": "もう1度試合をした。"}, {"t": 161.05, "x": "延長10回に1点を入れて、3対2で勝った。"}, {"t": 164.1, "x": "決勝は広島の広陵中に5対4。"}, {"t": 166.33333333333334, "x": "5回に4点を入れた試合だった。"}, {"t": 168.53333333333333, "x": "1点差で逃げ切って、2度目の春の優勝ね。"}, {"t": 171.53333333333333, "x": "そして1936年。今度は夏の大会だ。"}, {"t": 174.96666666666667, "x": "高野連の表では、夏の代表は22校だった。"}, {"t": 178.1, "x": "1回戦は岩手の盛岡商に18対0。"}, {"t": 181.05, "x": "18点？　いきなりすごい点数！"}, {"t": 183.28333333333333, "x": "2回戦は鳥取一中に4対1。"}, {"t": 185.43333333333334, "x": "準々決勝は和歌山商に9対1だ。"}, {"t": 188.1, "x": "準決勝は兵庫の育英商に7対1で勝った。"}, {"t": 191.1, "x": "決勝の相手は、京都の平安中だった。"}, {"t": 193.73333333333332, "x": "3回に3点、6回に6点。"}, {"t": 195.8, "x": "9対1で勝って、夏の初めての優勝だ。"}, {"t": 198.86666666666667, "x": "春に2回、夏に1回。これで3回目の日本一なのね。"}, {"t": 202.78333333333333, "x": "5試合で47点を入れて、取られたのは4点だけだった。"}, {"t": 206.55, "x": "1試合に1点より少ない計算になるわ。"}, {"t": 209.23333333333332, "x": "そうだ。そしてこの平安中という\n名前を、覚えておいてほしい。"}, {"t": 213.56666666666666, "x": "2年後の1938年の夏。"}, {"t": 216.03333333333333, "x": "岐阜商はまた夏の決勝まで来た。"}, {"t": 218.3, "x": "2回戦は松本商に5対0。"}, {"t": 220.28333333333333, "x": "準々決勝は下関商に5対0だ。"}, {"t": 223.01666666666668, "x": "準決勝は兵庫の甲陽中に3対1で勝った。"}, {"t": 226.15, "x": "決勝の相手は誰だったの？"}, {"t": 228.03333333333333, "x": "また平安中だ。2年前に9対1で勝った相手だった。"}, {"t": 231.58333333333334, "x": "記録の表では、8回まで両方に0が並んでいる。"}, {"t": 234.88333333333333, "x": "今度は点が入らない試合になったわけか。"}, {"t": 237.5, "x": "9回の表に、岐阜商が1点を入れた。"}, {"t": 240.23333333333332, "x": "あと3つアウトを取れば、2度目の夏の優勝じゃない。"}, {"t": 243.38333333333333, "x": "だが9回の裏に、平安中が2点を入れた。"}, {"t": 246.26666666666668, "x": "1対2のサヨナラ負けだ。"}, {"t": 248.08333333333334, "x": "最後の最後で、ひっくり返されたのね。"}, {"t": 250.71666666666667, "x": "1939年の春も、決勝で東邦商に2対7で負けている。"}, {"t": 255.41666666666666, "x": "2年続けて、決勝で止まったってこと？"}, {"t": 258.6666666666667, "x": "そして1940年の春。"}, {"t": 260.6666666666667, "x": "岐阜商は3度目の春の優勝をする。"}, {"t": 263.0833333333333, "x": "今度はどんな勝ち方だったの？"}, {"t": 265.1, "x": "最初の試合は2回戦だ。"}, {"t": 266.65, "x": "大阪の日新商に10対0。"}, {"t": 268.76666666666665, "x": "準々決勝は静岡の島田商に4対0。"}, {"t": 271.6666666666667, "x": "準決勝は福岡工に9対0だ。"}, {"t": 273.9, "x": "4回から8回まで、毎回1点を入れている。"}, {"t": 277.03333333333336, "x": "また0点に抑えてるじゃない。"}, {"t": 278.8333333333333, "x": "決勝は京都商だ。8回に2点を入れて、2対0で勝った。"}, {"t": 282.9166666666667, "x": "4試合とも相手が0点なの？"}, {"t": 284.96666666666664, "x": "ああ。4試合で25点を入れて、1点も取られていない。"}, {"t": 288.4, "x": "これで1933年から8年で、春に\n3度、夏に1度の日本一だ。"}, {"t": 293.76666666666665, "x": "8年で4回も勝つなんて、とんでもない学校ね。"}, {"t": 297.03333333333336, "x": "だがそのすぐあと、大会そのものが\n戦争で止まってしまう。"}, {"t": 301.2, "x": "戦争が終わったあと、岐阜商は戻ってきたの？"}, {"t": 304.1666666666667, "x": "戻ってきた。1947年の夏に、もう決勝まで来ている。"}, {"t": 308.53333333333336, "x": "海草中に3対0。京都二商に7対6。"}, {"t": 311.5, "x": "仙台二中に6対2だ。"}, {"t": 313.43333333333334, "x": "止まっていた大会が戻って、すぐに決勝だなんて。"}, {"t": 316.75, "x": "決勝の相手は福岡の小倉中だった。"}, {"t": 319.25, "x": "2回に3点を先に入れた。だが6回に\n4点を返されて、3対6で負けた。"}, {"t": 324.35, "x": "先に点を取っても、勝てなかったのね。"}, {"t": 326.93333333333334, "x": "そして1956年。この年は春も夏も決勝まで来た。"}, {"t": 331.21666666666664, "x": "同じ年に、春も夏も？"}, {"t": 333.18333333333334, "x": "ああ。春は1回戦で広島商に\n2対1。そのあと3つ勝って決勝だ。"}, {"t": 337.76666666666665, "x": "春の決勝は愛知の中京商に0対4だった。"}, {"t": 340.8, "x": "夏は準々決勝が延長12回、準決勝が延長10回だ。"}, {"t": 344.8333333333333, "x": "どっちもサヨナラ勝ちだった。"}, {"t": 346.4166666666667, "x": "済々黌に4対3、米子東に2対1だ。"}, {"t": 349.71666666666664, "x": "2試合続けて延長のサヨナラなの？"}, {"t": 351.78333333333336, "x": "見ている人はくたくたね。"}, {"t": 353.6, "x": "そして夏の決勝の相手が、また平安だった。"}, {"t": 356.71666666666664, "x": "えっ、また？"}, {"t": 358.3, "x": "1956年の夏の決勝。"}, {"t": 360.56666666666666, "x": "平安は1回に2点を入れた。"}, {"t": 362.5, "x": "県岐阜商は5回に2点を入れて追いついた。"}, {"t": 365.1333333333333, "x": "これで2対2の同点だわ。"}, {"t": 366.9, "x": "だが6回に、平安が1点を入れた。2対3で負けだ。"}, {"t": 370.6, "x": "また1点差で、平安に負けたのね。"}, {"t": 373.06666666666666, "x": "ここで県岐阜商の夏の決勝を、全部並べてみよう。"}, {"t": 376.35, "x": "1936年は平安中に9対1で勝ち。"}, {"t": 379.73333333333335, "x": "1938年は平安中に1対2で負け。"}, {"t": 382.9, "x": "9回の裏のサヨナラだった。"}, {"t": 384.8, "x": "1947年は小倉中に3対6。"}, {"t": 387.68333333333334, "x": "1956年は平安に2対3だ。"}, {"t": 390.6666666666667, "x": "夏の決勝は4回あって、そのうち3回が平安ってこと？"}, {"t": 394.5, "x": "そうなる。勝てたのは最初の1回だけだ。"}, {"t": 397.0833333333333, "x": "負けた3つのうち、2つは1点差だった。"}, {"t": 399.95, "x": "あと1点で、夏の優勝が3回も\n増えていたかもしれないのね。"}, {"t": 403.8666666666667, "x": "1点差の2つが逆だったら、という話だな。"}, {"t": 406.73333333333335, "x": "表に残るのは負けのほうだ。"}, {"t": 408.6333333333333, "x": "この年は、春と夏の両方で準優勝だったのよね。"}, {"t": 412.1166666666667, "x": "ああ。そして県岐阜商が夏の決勝に\n立ったのは、この1956年が最後になる。"}, {"t": 418.26666666666665, "x": "そのあとは、夏の決勝に来ていないの？"}, {"t": 420.8833333333333, "x": "2025年の夏まで、夏の決勝には来ていない。"}, {"t": 424.23333333333335, "x": "それでも甲子園には何度も来ている。"}, {"t": 426.4, "x": "夏の代表は1960年から3年続けて県岐阜商だ。"}, {"t": 430.6166666666667, "x": "それでも決勝までは届かなかったの？"}, {"t": 433.01666666666665, "x": "大きな夏が来たのは2009年だ。"}, {"t": 435.15, "x": "最初の試合は2回戦だった。"}, {"t": 437.1666666666667, "x": "山梨学院大付に14対6。"}, {"t": 439.28333333333336, "x": "1回に7点を入れている。"}, {"t": 441.05, "x": "3回戦は大阪のPL学園に6対3。"}, {"t": 443.71666666666664, "x": "準々決勝は東京の帝京に6対3だ。"}, {"t": 446.73333333333335, "x": "名前の知られた私立の学校に、続けて勝ったのね。"}, {"t": 450.1, "x": "準決勝の相手は新潟の日本文理だった。"}, {"t": 452.85, "x": "5回と6回に1点ずつ取られた。"}, {"t": 454.8833333333333, "x": "9回に1点を返したが、1対2で負けた。"}, {"t": 457.96666666666664, "x": "決勝まで、あと1点だったってこと？"}, {"t": 460.48333333333335, "x": "そうだ。1956年から数えて\n53年ぶりの夏の決勝に、1点届かなかった。"}, {"t": 467.06666666666666, "x": "そして2025年の夏。"}, {"t": 468.8333333333333, "x": "県岐阜商は3年ぶりに夏の甲子園に来た。"}, {"t": 471.73333333333335, "x": "1回戦は山形の日大山形だ。"}, {"t": 474.01666666666665, "x": "1回に1点を先に取られた。"}, {"t": 476.03333333333336, "x": "5回に2点。7回に4点を入れて、6対3で勝った。"}, {"t": 479.8666666666667, "x": "先に取られても、あとでひっくり返したんだ。"}, {"t": 482.73333333333335, "x": "2回戦は熊本の東海大熊本星翔に4対3。"}, {"t": 486.03333333333336, "x": "8回の1点で勝ち越した。"}, {"t": 487.96666666666664, "x": "3回戦は大分の明豊に3対1。"}, {"t": 490.28333333333336, "x": "1回に入れた3点を守り切った。"}, {"t": 492.6, "x": "これで準々決勝ね。相手が、\n春の王者の横浜だったのよね。"}, {"t": 496.78333333333336, "x": "そうだ。県岐阜商は1回、4回、5回に\n点を入れて、4対0で前を走った。"}, {"t": 501.96666666666664, "x": "だが横浜が6回に3点、8回に\n1点を入れて、4対4になった。"}, {"t": 506.65, "x": "追いつかれちゃったのね。"}, {"t": 508.1, "x": "9回は両方0点。延長は10回からタイブレークだ。"}, {"t": 511.43333333333334, "x": "10回は、両方が3点ずつ入れた。"}, {"t": 513.9666666666667, "x": "まだ決まらないの？　見ているほうが疲れちゃう。"}, {"t": 516.6166666666667, "x": "11回の表を横浜が0点に抑えられた。\nそして裏に1点。8対7だ。"}, {"t": 521.7833333333333, "x": "最後はサヨナラ！"}, {"t": 523.05, "x": "ある記事によると、3回戦の勝ちで\n甲子園の勝ちが春夏で90になった。"}, {"t": 527.7, "x": "同じ記事は、春夏90勝は史上4校目と書いている。"}, {"t": 531.4166666666666, "x": "4つ目の学校？　そんなに少ないのね。"}, {"t": 534.5666666666667, "x": "準決勝の相手は西東京の日大三だ。"}, {"t": 537.3333333333334, "x": "1回に日大三が1点。"}, {"t": 538.95, "x": "県岐阜商は2回と5回に1点ずつ入れた。"}, {"t": 541.8, "x": "2対1で、県岐阜商が勝ってるじゃない。"}, {"t": 544.35, "x": "だが8回に日大三が1点を入れて、2対2になった。"}, {"t": 547.8833333333333, "x": "9回は両方0点。また延長のタイブレークだ。"}, {"t": 550.85, "x": "10回の表に日大三が2点。"}, {"t": 552.8833333333333, "x": "裏の県岐阜商は0点だった。"}, {"t": 555.0333333333333, "x": "2対4。ここで終わっちゃったんだ。"}, {"t": 557.2166666666667, "x": "そうだ。2009年と同じ、4強だった。"}, {"t": 560.0833333333334, "x": "この夏の5試合を並べると、こうなる。"}, {"t": 562.4833333333333, "x": "6対3、4対3、3対1、8対7。そして準決勝の2対4だ。"}, {"t": 567.7666666666667, "x": "4つの勝ちは、どれも3点差までだわ。"}, {"t": 570.4, "x": "ああ。4つのうち2つは1点差だった。"}, {"t": 573.5333333333333, "x": "結局、県岐阜商はどんな学校だったの？"}, {"t": 576.3833333333333, "x": "1904年に岐阜市で開いた、今は県立の商業高校だ。"}, {"t": 580.4333333333333, "x": "春の大会には12回続けて出て、\n戦争の前の8年で4度日本一になった。"}, {"t": 585.7666666666667, "x": "そのあとも、決勝で何度も平安とぶつかったのよね。"}, {"t": 589.1666666666666, "x": "ああ。夏の決勝4つのうち3つが平安で、\n負けた3つのうち2つは1点差だ。"}, {"t": 594.3666666666667, "x": "それで、どうして今も勝てる学校なの？"}, {"t": 596.9166666666666, "x": "表から言えるのは、出た回数の多さだ。"}, {"t": 599.3166666666667, "x": "ある記事では、2025年の夏までで春夏61度の出場だ。"}, {"t": 603.7333333333333, "x": "1点差で負けた決勝も、53年後の1点差の準決勝も、\n全部その61度の中にある。"}, {"t": 609.95, "x": "出続けたから、春の王者に勝つ\n夏もやって来たってことね。"}, {"t": 613.7166666666667, "x": "そうだ。90年前の日本一は、昔話ではなく、\n61度続いた出場の最初のほうにある。"}, {"t": 620.2166666666667, "x": "次に夏の決勝に来たら、相手が\n平安かどうか見てみたいわ。"}, {"t": 624.1, "x": "そのときは、表に5つ目の決勝の行が\n増える。また数えてみよう。"}, {"t": 628.2833333333333, "x": "ここまで見てくれてありがとう。"}, {"t": 629.8, "x": "登録と高評価もよろしくね。"}], "w": 720, "h": 405, "n_cuts": 0, "noimage": true};
+const a=document.getElementById('a');
+const now=document.getElementById('now'), nl=document.getElementById('nextline');
+const pp=document.getElementById('pp'), sk=document.getElementById('sk');
+const tm=document.getElementById('tm'), bdg=document.getElementById('bdg');
+const SMOOTH=matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth';
+document.getElementById('ttl').innerHTML=D.name+
+  '<span class="meta">'+fmt(D.dur)+'　字幕'+D.subs.length+'　（音声＋字幕だけ）</span>';
+
+function fmt(s){s=Math.max(0,s|0);return (s/60|0)+':'+String(s%60).padStart(2,'0')}
+function subIdx(t){let lo=0,hi=D.subs.length-1,r=-1;
+  while(lo<=hi){const m=(lo+hi)>>1; if(D.subs[m].t<=t){r=m;lo=m+1}else hi=m-1} return r}
+
+let cur=-2;
+function paint(t){
+  const i=subIdx(t);
+  if(i!==cur){cur=i;
+    now.textContent = i<0 ? (D.subs.length?'（ここはまだ字幕がありません）'
+                                          :'（この回に字幕はありません）')
+                         : D.subs[i].x;
+    const n=D.subs[i+1]; nl.textContent = n ? '次　'+n.x : '';
+    bdg.textContent = D.subs.length ? '字幕 '+(i+1)+' / '+D.subs.length : '字幕なし';
+    mark('subs',i);
+  }
+  tm.textContent=fmt(t)+' / '+fmt(D.dur);
+  if(!sk.dragging) sk.value=Math.round(t/D.dur*1000);
+}
+function mark(pane,i){
+  const el=document.getElementById(pane);
+  if(el.dataset.on==i) return; el.dataset.on=i;
+  el.querySelectorAll('.on').forEach(x=>x.classList.remove('on'));
+  const t=el.children[i]; if(!t) return; t.classList.add('on');
+  if(!el.hidden){const r=t.offsetTop-el.clientHeight/2; el.scrollTo({top:r,behavior:SMOOTH})}
+}
+
+D.subs.forEach(s=>{const d=document.createElement('div');d.className='row';
+  d.innerHTML='<b></b><span></span>';
+  d.querySelector('b').textContent=fmt(s.t);
+  d.querySelector('span').textContent=s.x;
+  d.onclick=()=>go(s.t); document.getElementById('subs').appendChild(d)});
+const mk=document.getElementById('mk');
+D.subs.forEach(s=>{const i=document.createElement('i');
+  i.style.left=(s.t/D.dur*100)+'%'; mk.appendChild(i)});
+
+function go(t){a.currentTime=Math.min(Math.max(0,t)+0.01,Math.max(0.05,D.dur-0.05)); paint(a.currentTime)}
+pp.onclick=()=>a.paused?a.play():a.pause();
+const SPEEDS=[1,1.25,1.5,1.75,2,3,0.75],SPN=['等速','1.25倍','1.5倍','1.75倍','2倍','3倍','0.75倍'];
+let si=0; const sp=document.getElementById('sp');
+sp.onclick=()=>{si=(si+1)%SPEEDS.length; a.playbackRate=SPEEDS[si];
+  a.preservesPitch=a.mozPreservesPitch=a.webkitPreservesPitch=true; sp.textContent=SPN[si]};
+a.onplay=()=>pp.textContent='❚❚ 停止'; a.onpause=()=>pp.textContent='▶ 再生';
+a.ontimeupdate=()=>paint(a.currentTime);
+sk.oninput=()=>{sk.dragging=1; go(sk.value/1000*D.dur)};
+sk.onchange=()=>sk.dragging=0;
+document.getElementById('pv').onclick=()=>{const i=subIdx(a.currentTime);
+  go(i>0?D.subs[i-1].t:0)};
+document.getElementById('nx').onclick=()=>{const i=subIdx(a.currentTime);
+  if(i+1<D.subs.length) go(D.subs[i+1].t)};
+addEventListener('keydown',e=>{const k=e.key;
+  if(k===' '){e.preventDefault();pp.onclick()}
+  else if(k==='ArrowRight')go(a.currentTime+5); else if(k==='ArrowLeft')go(a.currentTime-5);
+  else if(k==='ArrowDown'){e.preventDefault();document.getElementById('nx').onclick()}
+  else if(k==='ArrowUp'){e.preventDefault();document.getElementById('pv').onclick()}
+  else if(k==='s'||k==='S')sp.onclick()});
+paint(0);
+</script>
