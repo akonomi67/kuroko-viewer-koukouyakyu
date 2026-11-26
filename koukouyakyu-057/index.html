@@ -1,0 +1,133 @@
+<title>高知商の4度の決勝</title>
+<style>
+:root{--bg:#f6f4f1;--panel:#fffefc;--ink:#1c1a19;--dim:#6e6862;--line:#e2ded7;--accent:#b8422f}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#17161a;--panel:#201e23;--ink:#ece8e4;--dim:#9b948d;--line:#33303a;--accent:#e0705a}}
+:root[data-theme="dark"]{--bg:#17161a;--panel:#201e23;--ink:#ece8e4;--dim:#9b948d;--line:#33303a;--accent:#e0705a}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);margin:0;-webkit-text-size-adjust:100%;
+  font:16px/1.7 -apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic UI",sans-serif}
+.wrap{max-width:1000px;margin:0 auto;padding:16px}
+h1{font-size:17px;margin:4px 0 14px;font-weight:600;letter-spacing:.02em}
+.meta{color:var(--dim);font-size:13px;font-weight:400;margin-left:8px}
+.stage{background:var(--panel);border:1px solid var(--line);border-radius:12px;position:relative;
+  min-height:40vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:46px 20px 26px;box-shadow:0 2px 14px rgba(0,0,0,.10)}
+#now{margin:0;text-align:center;white-space:pre-wrap;word-break:break-word;font-weight:700;
+  font-size:clamp(23px,5.4vw,42px);line-height:1.5;letter-spacing:.01em}
+#nextline{margin:16px 0 0;text-align:center;white-space:pre-wrap;word-break:break-word;
+  color:var(--dim);font-size:clamp(13px,2.8vw,17px);line-height:1.6}
+.badge{position:absolute;left:12px;top:12px;background:rgba(127,127,127,.16);color:var(--dim);
+  font-size:12px;padding:3px 9px;border-radius:20px;line-height:1.6;letter-spacing:.04em}
+.bar{display:flex;align-items:center;gap:10px;margin:12px 0 6px;flex-wrap:wrap}
+button{background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:8px;
+  padding:9px 14px;font-size:15px;cursor:pointer;font-family:inherit}
+button:active{transform:translateY(1px)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button.play{background:var(--accent);color:#fff;border-color:transparent;min-width:80px;font-weight:600}
+.time{font-variant-numeric:tabular-nums;color:var(--dim);font-size:13px;margin-left:auto}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.marks{position:relative;height:7px;margin:2px 0 14px}
+.marks i{position:absolute;top:0;width:1px;height:7px;background:var(--line)}
+.tabs{display:flex;gap:6px;margin:18px 0 10px;border-bottom:1px solid var(--line)}
+.tabs button{border:0;border-bottom:2px solid transparent;border-radius:0;background:none;
+  color:var(--ink);padding:7px 12px;font-weight:600}
+.list{max-height:46vh;overflow:auto;border:1px solid var(--line);border-radius:10px;background:var(--panel);
+  -webkit-overflow-scrolling:touch}
+.row{display:flex;gap:12px;padding:11px 14px;border-bottom:1px solid var(--line);cursor:pointer}
+.row:last-child{border-bottom:0}
+.row:hover{background:rgba(127,127,127,.07)}
+.row.on{background:rgba(184,66,47,.12)}
+.row b{color:var(--dim);font-variant-numeric:tabular-nums;font-weight:500;font-size:13px;
+  min-width:48px;flex:none;padding-top:2px}
+.row span{white-space:pre-wrap;flex:1;font-size:16px;line-height:1.65}
+.tip{color:var(--dim);font-size:12.5px;margin:10px 2px 0}
+@media(max-width:620px){.wrap{padding:10px}.time{font-size:12px}
+  .bar button{padding:9px 11px;font-size:14px}.stage{padding:42px 14px 22px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+<div class="wrap">
+<h1 id="ttl"></h1>
+<div class="stage"><div class="badge" id="bdg"></div>
+  <p id="now"></p><p id="nextline"></p></div>
+<div class="bar">
+  <button class="play" id="pp">▶ 再生</button>
+  <button id="pv">◀ 前の字幕</button>
+  <button id="nx">次の字幕 ▶</button>
+  <button id="sp">等速</button>
+  <span class="time" id="tm">0:00 / 0:00</span>
+</div>
+<input type="range" id="sk" min="0" max="1000" value="0">
+<div class="marks" id="mk"></div>
+<div class="tabs"><button class="on">字幕</button></div>
+<div class="list" id="subs"></div>
+<p class="tip">スペース＝再生/停止　←→＝5秒送り　↑↓＝字幕送り。字幕をタップするとそこへ飛びます。</p>
+</div>
+<audio id="a" src="audio.mp3" preload="auto"></audio>
+<script>
+const D={"name": "高知商の4度の決勝", "file": "057_編集用", "dur": 602.95, "segs": [], "subs": [{"t": 0.0, "x": "1980年の春、甲子園。"}, {"t": 2.283333333333333, "x": "センバツの決勝は9回を終えて0対0だった。"}, {"t": 5.4, "x": "9回まで、どっちも1点も取れなかったの？"}, {"t": 8.266666666666667, "x": "ああ。試合は延長に入った。\nそして10回の裏に1点が入った。"}, {"t": 12.366666666666667, "x": "1対0のサヨナラ。勝ったのは高知の高知商だ。"}, {"t": 15.65, "x": "最後の最後に、1点だけで決まったのね。"}, {"t": 18.433333333333334, "x": "そうだ。そしてこれが高知商に\nとって4度目の決勝だった。"}, {"t": 22.2, "x": "4度目って、前に3回も決勝に出ていたの？"}, {"t": 25.266666666666666, "x": "春に2度、夏に1度。"}, {"t": 26.816666666666666, "x": "3つとも負けている。"}, {"t": 28.233333333333334, "x": "4度目の決勝で、初めて勝った。"}, {"t": 30.666666666666668, "x": "じゃあ、どんな学校が、4度の決勝をどう戦ったの？"}, {"t": 34.166666666666664, "x": "日本高野連の一覧と大会小史、記録のサイトの表、\nそれに学校の紹介を開いていこう。"}, {"t": 39.88333333333333, "x": "その前にチャンネル登録と\n高評価をしてもらえるとうれしい。"}, {"t": 43.31666666666667, "x": "押してもらえたら、私もがんばれるわ。"}, {"t": 46.266666666666666, "x": "高知商って、どういう学校なの？"}, {"t": 48.483333333333334, "x": "高知市が建てた市立の高校だ。"}, {"t": 50.4, "x": "学校の紹介では県で1つだけの市立の高校とある。"}, {"t": 53.86666666666667, "x": "始まりは1898年。"}, {"t": 55.93333333333333, "x": "高知市の帯屋町に簡易商業学校として開いた。"}, {"t": 59.28333333333333, "x": "1898年って、明治のころでしょう？"}, {"t": 62.46666666666667, "x": "そうだ。学校の紹介には\n創立128年を迎えると書いてある。"}, {"t": 66.75, "x": "今は4つの科がある。その1つは\nスポーツマネジメント科だ。"}, {"t": 70.46666666666667, "x": "商業の学校に、スポーツの科もあるんだ。"}, {"t": 73.18333333333334, "x": "ああ。ではこの学校が甲子園に\n初めて来た年から見ていこう。"}, {"t": 77.48333333333333, "x": "日本高野連の一覧で高知商が初めて\n出てくるのは1948年の春だ。"}, {"t": 82.65, "x": "第20回のセンバツで、出場は16校。"}, {"t": 85.38333333333334, "x": "四国からは高知商と徳島商の2校だった。"}, {"t": 88.5, "x": "16校しか出られない大会だったの？"}, {"t": 90.95, "x": "そうだ。今のセンバツの半分くらいだ。"}, {"t": 93.38333333333334, "x": "記録のサイトでは、最初の試合で\n群馬の桐生工に5対2で勝った。"}, {"t": 97.43333333333334, "x": "準々決勝は山口の下関商に\n1対7。ここで止まって8強だ。"}, {"t": 102.25, "x": "初めての甲子園で、いきなり1つ勝ったのね。"}, {"t": 105.33333333333333, "x": "そして同じ1948年の夏にも\n甲子園に来た。この夏の代表は23校だ。"}, {"t": 111.1, "x": "2回戦で山口の柳井に8対4。"}, {"t": 113.33333333333333, "x": "準々決勝で岐阜の岐阜一に6対8で負けた。"}, {"t": 116.65, "x": "初めての年に、春も夏も8強なんて。"}, {"t": 119.61666666666666, "x": "ああ。そして2年後の春に1度目の決勝がやってくる。"}, {"t": 123.56666666666666, "x": "1950年の第22回センバツ。"}, {"t": 126.13333333333334, "x": "出場はこの年も16校だった。"}, {"t": 128.43333333333334, "x": "最初の試合は和歌山の海南だ。"}, {"t": 130.4, "x": "9回を終えて2対2。"}, {"t": 132.0, "x": "いきなり延長になったの？"}, {"t": 133.7, "x": "そうだ。10回に高知商が2点を入れて4対2で勝った。"}, {"t": 137.21666666666667, "x": "準々決勝は熊本の熊本工に5対3。"}, {"t": 139.96666666666667, "x": "準決勝は岐阜の長良に13対9だ。"}, {"t": 142.78333333333333, "x": "13点と9点って、たくさん点が入った試合だったのね。"}, {"t": 146.63333333333333, "x": "ああ。高知商は9回にも4点を足している。"}, {"t": 149.35, "x": "決勝の相手は静岡の韮山だった。"}, {"t": 151.75, "x": "韮山は1回に2点を入れて7回にも2点。"}, {"t": 154.4, "x": "高知商は9回の1点だけだ。"}, {"t": 156.53333333333333, "x": "1対4で負けた。韮山はこれが初めての優勝だった。"}, {"t": 160.25, "x": "1度目の決勝は、3点差の負けか。"}, {"t": 162.88333333333333, "x": "そうだ。次の決勝は7年後になる。"}, {"t": 165.96666666666667, "x": "1957年の第29回センバツ。"}, {"t": 168.85, "x": "出場は20校だった。"}, {"t": 170.56666666666666, "x": "高知商の最初の試合は2回戦で、\n相手は福岡の小倉だ。5対1で勝った。"}, {"t": 175.5, "x": "準々決勝は滋賀の八幡商に7対1。"}, {"t": 178.16666666666666, "x": "準決勝は岡山の倉敷工に3対1だ。"}, {"t": 181.28333333333333, "x": "3試合とも、1点しか取られていないわ。"}, {"t": 183.98333333333332, "x": "ああ。決勝の相手は東京の早稲田実だった。"}, {"t": 186.8, "x": "早稲田実は1回に2点、2回に\n1点、5回に2点を入れた。"}, {"t": 190.81666666666666, "x": "0対5まで離されちゃったの？"}, {"t": 192.85, "x": "そうだ。だが8回に高知商が3点を返した。"}, {"t": 195.86666666666667, "x": "ただ9回は点が入らず、3対5で負けた。"}, {"t": 198.86666666666667, "x": "2点差まで追いついたのに、届かなかったのね。"}, {"t": 201.78333333333333, "x": "早稲田実もこれが初めての優勝だ。"}, {"t": 203.96666666666667, "x": "2度とも、相手にとって初めての優勝だった。"}, {"t": 207.06666666666666, "x": "春の決勝で2回負けたことになるわ。"}, {"t": 209.56666666666666, "x": "ああ。次の決勝は21年後の夏だ。"}, {"t": 212.86666666666667, "x": "21年も、決勝に出られなかったの？"}, {"t": 215.56666666666666, "x": "決勝には届かなかった。だが\n夏の準決勝までは3度来ている。"}, {"t": 219.56666666666666, "x": "1度目は1954年の夏だ。"}, {"t": 221.86666666666667, "x": "京都の平安に5対4で勝ち、神奈川の鶴見工に8対3。"}, {"t": 225.83333333333334, "x": "準々決勝では東京の早稲田実に5対4で勝っている。"}, {"t": 229.4, "x": "3年後の春に決勝で負ける相手に、\nこの夏は勝っていたんだ。"}, {"t": 233.36666666666667, "x": "そうだ。だが準決勝で静岡の静岡商に1対3で負けた。"}, {"t": 237.33333333333334, "x": "2度目は1958年の夏。"}, {"t": 239.58333333333334, "x": "青森の東奥義塾に6対1、三重の松阪商に5対0。"}, {"t": 243.48333333333332, "x": "3回戦は千葉の銚子商に4対1。"}, {"t": 245.78333333333333, "x": "準々決勝は京都の平安に2対0だ。"}, {"t": 248.68333333333334, "x": "4試合で、取られたのは2点だけよ。"}, {"t": 251.11666666666667, "x": "ああ。準決勝の相手は\n山口の柳井だった。0対1で負けた。"}, {"t": 255.21666666666667, "x": "柳井はこの夏、そのまま初めての優勝をしている。"}, {"t": 258.53333333333336, "x": "あと1点で、決勝に出られなかったんだ。"}, {"t": 261.18333333333334, "x": "3度目は1972年の夏だ。"}, {"t": 263.65, "x": "1回戦は東京の日大桜丘に延長11回で4対2。"}, {"t": 267.7, "x": "2回戦は兵庫の東洋大姫路に3対1、\n準々決勝は愛知の中京に4対2だ。"}, {"t": 273.1333333333333, "x": "準決勝はまた柳井だった。"}, {"t": 274.78333333333336, "x": "今度は2対7で負けている。"}, {"t": 276.75, "x": "同じ学校に、準決勝で2回も止められたの？"}, {"t": 279.9, "x": "そうだ。夏の準決勝は3度とも負けた。"}, {"t": 282.5, "x": "決勝の舞台は遠かった。"}, {"t": 284.8666666666667, "x": "1978年の夏は第60回の記念大会だった。"}, {"t": 288.98333333333335, "x": "大会小史によると、この大会を記念して\n全部の都道府県から1校ずつ出ることになった。"}, {"t": 294.5, "x": "東京と北海道は2校ずつ。"}, {"t": 296.28333333333336, "x": "代表は49校で、参加した学校は3074校だ。"}, {"t": 300.55, "x": "3000校をこえる中の、高知の代表ってわけか。"}, {"t": 303.73333333333335, "x": "そうだ。高知商は\n南北海道の東海大四に5対1で勝った。"}, {"t": 307.8333333333333, "x": "2回戦は鳥取の倉吉北に14対6。"}, {"t": 310.6166666666667, "x": "3回戦は宮城の仙台育英に4対2だ。"}, {"t": 313.6166666666667, "x": "14点も取った試合があったの？"}, {"t": 315.76666666666665, "x": "ああ。倉吉北も4回に6点を入れている。"}, {"t": 318.51666666666665, "x": "だが高知商は同じ4回に4点、\n7回にも4点を入れて差を広げた。"}, {"t": 322.96666666666664, "x": "準々決勝は兵庫の報徳学園に9対2。"}, {"t": 325.75, "x": "準決勝は岡山の岡山東商に4対0だ。"}, {"t": 329.15, "x": "5つ勝って、また決勝まで来たのね。"}, {"t": 331.73333333333335, "x": "決勝の相手は大阪のPL学園だった。"}, {"t": 334.23333333333335, "x": "高知商は3回に2点を入れた。"}, {"t": 336.31666666666666, "x": "そこから8回まで、PL学園に点は入らなかった。"}, {"t": 339.85, "x": "じゃあ、2対0のまま9回になったの？"}, {"t": 342.43333333333334, "x": "そうだ。だが9回の裏にPL学園が3点を入れた。"}, {"t": 345.6666666666667, "x": "2対3のサヨナラ負けだ。"}, {"t": 347.56666666666666, "x": "あと1回のところで、ひっくり返されたなんて。"}, {"t": 350.53333333333336, "x": "ある記事によると、この時の監督は谷脇一夫だった。"}, {"t": 354.03333333333336, "x": "そしてこの監督のもとで、\n2年後の春に4度目の決勝が来る。"}, {"t": 358.65, "x": "1980年の第52回センバツ。"}, {"t": 361.35, "x": "出場は30校だった。"}, {"t": 363.15, "x": "1回戦は和歌山の新宮に9対1。"}, {"t": 365.5, "x": "2回戦は静岡の富士宮北に7対0だ。"}, {"t": 368.75, "x": "2試合で、取られたのは1点だけね。"}, {"t": 371.1666666666667, "x": "ああ。だが準々決勝の兵庫の尼崎北はちがった。"}, {"t": 374.6, "x": "1回に1点、3回に2点を取られて、0対3から始まった。"}, {"t": 378.9166666666667, "x": "先に3点も取られたの？"}, {"t": 380.73333333333335, "x": "そうだ。高知商は2回と5回に\n1点ずつ。そして8回に2点を入れた。"}, {"t": 385.28333333333336, "x": "4対3でひっくり返した。"}, {"t": 387.23333333333335, "x": "今度は、高知商がひっくり返す側だったんだ。"}, {"t": 390.28333333333336, "x": "準決勝は広島の広陵だ。"}, {"t": 392.1166666666667, "x": "2回に4点を入れて5対1で勝った。"}, {"t": 394.51666666666665, "x": "そして決勝。相手は東京の帝京だった。"}, {"t": 397.3, "x": "大会小史は、高知商の中西と\n帝京の伊東の投げ合いと書いている。"}, {"t": 401.65, "x": "どっちの投手も、点をあげなかったのね。"}, {"t": 404.25, "x": "ああ。記録のサイトの表では、\n9回まで両方の列に0が9つずつ並ぶ。"}, {"t": 408.93333333333334, "x": "そして10回の裏に高知商が1点。"}, {"t": 411.1166666666667, "x": "1対0のサヨナラで初めて優勝した。"}, {"t": 413.8833333333333, "x": "1度目の決勝から、30年かかったのね。"}, {"t": 416.9, "x": "そうだ。1度目の決勝から30年後の春だった。"}, {"t": 420.81666666666666, "x": "あらためて、4つの決勝の点を並べるとどうなるの？"}, {"t": 424.1333333333333, "x": "1対4、3対5、2対3、そして1対0だ。"}, {"t": 427.65, "x": "負けた3つの差は、3点、2点、\n1点。だんだん小さくなっている。"}, {"t": 432.06666666666666, "x": "本当だわ。少しずつ近づいていたんだ。"}, {"t": 434.8, "x": "4つの決勝で取った点を足すと7点だ。"}, {"t": 437.3333333333333, "x": "取られた点は12点になる。"}, {"t": 439.26666666666665, "x": "取られた点のほうが、5点も多いわ。"}, {"t": 441.6, "x": "ああ。そして勝った決勝は、取った\n点がいちばん少ない1点の試合だった。"}, {"t": 446.18333333333334, "x": "1点で勝って、初めての優勝なんて。"}, {"t": 448.85, "x": "1980年の春の5試合では、取った\n点が26点で、取られた点は5点だ。"}, {"t": 454.25, "x": "決勝までの4試合で取られた5点のうち、\n3点は尼崎北の試合だった。"}, {"t": 459.05, "x": "決勝では、1点も取られなかったのよね。"}, {"t": 461.8, "x": "そうだ。0点に抑えたのは、\n富士宮北と帝京の2試合だった。"}, {"t": 466.6666666666667, "x": "優勝したあと、高知商はどうなったの？"}, {"t": 469.2, "x": "記録のサイトでは、その1980年の夏は\n2回戦で負けている。"}, {"t": 473.6666666666667, "x": "1980年から1989年までの10年で、\n春と夏を合わせて10回来ている。"}, {"t": 479.68333333333334, "x": "ある記事によると、1997年の夏は\n藤川球児と兄の兄弟で投手と捕手を組んだ。"}, {"t": 485.7, "x": "兄弟でバッテリーなんて、めずらしいわ。"}, {"t": 488.15, "x": "そのあとは、2006年の夏と2018年の夏だ。"}, {"t": 491.75, "x": "2018年は第100回の記念大会。"}, {"t": 494.26666666666665, "x": "1回戦は山梨の山梨学院だった。"}, {"t": 496.95, "x": "5回に8点を取られたが、高知商は14対12で勝った。"}, {"t": 500.8333333333333, "x": "8点も取られて、それでも勝ったの？"}, {"t": 503.26666666666665, "x": "ああ。2回戦は北神奈川の慶応だ。"}, {"t": 505.5833333333333, "x": "2回に7点を入れて12対6で勝った。"}, {"t": 508.25, "x": "3回戦は愛媛の済美に1対3で負けた。"}, {"t": 511.21666666666664, "x": "それから、甲子園には来ていないの？"}, {"t": 513.55, "x": "日本高野連の一覧と記録のサイトでは、\nそのあとの高知の夏の代表は明徳義塾と高知中央だ。"}, {"t": 519.85, "x": "2026年の夏、高知商は第1\nシードで高知大会に入った。"}, {"t": 524.1833333333333, "x": "だが野球の専門サイトの記事では\n準々決勝で高知に2対4で負けている。"}, {"t": 528.6833333333333, "x": "同じ夏に明徳義塾が24度目の出場を決めた。"}, {"t": 532.1, "x": "記事によると、それまで夏の出場は\n高知商と23度で並んでいた。"}, {"t": 536.55, "x": "高知でいちばん夏に\n出ていたのは、高知商だったのね。"}, {"t": 539.9, "x": "そうだ。記録のサイトでは、春と\n夏を合わせて37回、61勝36敗だ。"}, {"t": 546.0833333333334, "x": "最初の問いに戻るけど、\n高知商はどんな学校だったの？"}, {"t": 549.6166666666667, "x": "明治の1898年に、高知市で開いた商業の学校だ。"}, {"t": 553.7833333333333, "x": "初めての甲子園は1948年だった。"}, {"t": 557.1333333333333, "x": "じゃあ、4度の決勝はどう戦ったの？"}, {"t": 559.65, "x": "1度目と2度目は春で、韮山と\n早稲田実の初めての優勝の相手になった。"}, {"t": 564.35, "x": "そのあいだの夏は準決勝で\n3度止まり、決勝の手前で帰っている。"}, {"t": 568.45, "x": "3度目の1978年は、9回の裏まで\n2点の差で前にいて逆転された。"}, {"t": 573.7333333333333, "x": "4度目の1980年は、10回の裏の1点で勝った。"}, {"t": 577.8166666666667, "x": "3点差、2点差、1点差と負けて、\n最後は1点差で勝ったんだ。"}, {"t": 582.3166666666667, "x": "そうだ。点数だけを並べると、\n4つの決勝は少しずつ前に進んでいる。"}, {"t": 587.0333333333333, "x": "夏の決勝の勝ちは、まだ無いんでしょう？"}, {"t": 589.5833333333334, "x": "ああ。記録のサイトの表でも、\n夏の優勝の欄はまだ空いたままだ。"}, {"t": 593.6666666666666, "x": "その欄が埋まる日が来たら、\n4つの点の横に5つ目を書き足したいわ。"}, {"t": 598.0, "x": "見てくれてありがとう。"}, {"t": 599.1, "x": "高評価とチャンネル登録で、次の回でまた会おう。"}], "w": 720, "h": 405, "n_cuts": 0, "noimage": true};
+const a=document.getElementById('a');
+const now=document.getElementById('now'), nl=document.getElementById('nextline');
+const pp=document.getElementById('pp'), sk=document.getElementById('sk');
+const tm=document.getElementById('tm'), bdg=document.getElementById('bdg');
+const SMOOTH=matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth';
+document.getElementById('ttl').innerHTML=D.name+
+  '<span class="meta">'+fmt(D.dur)+'　字幕'+D.subs.length+'　（音声＋字幕だけ）</span>';
+
+function fmt(s){s=Math.max(0,s|0);return (s/60|0)+':'+String(s%60).padStart(2,'0')}
+function subIdx(t){let lo=0,hi=D.subs.length-1,r=-1;
+  while(lo<=hi){const m=(lo+hi)>>1; if(D.subs[m].t<=t){r=m;lo=m+1}else hi=m-1} return r}
+
+let cur=-2;
+function paint(t){
+  const i=subIdx(t);
+  if(i!==cur){cur=i;
+    now.textContent = i<0 ? (D.subs.length?'（ここはまだ字幕がありません）'
+                                          :'（この回に字幕はありません）')
+                         : D.subs[i].x;
+    const n=D.subs[i+1]; nl.textContent = n ? '次　'+n.x : '';
+    bdg.textContent = D.subs.length ? '字幕 '+(i+1)+' / '+D.subs.length : '字幕なし';
+    mark('subs',i);
+  }
+  tm.textContent=fmt(t)+' / '+fmt(D.dur);
+  if(!sk.dragging) sk.value=Math.round(t/D.dur*1000);
+}
+function mark(pane,i){
+  const el=document.getElementById(pane);
+  if(el.dataset.on==i) return; el.dataset.on=i;
+  el.querySelectorAll('.on').forEach(x=>x.classList.remove('on'));
+  const t=el.children[i]; if(!t) return; t.classList.add('on');
+  if(!el.hidden){const r=t.offsetTop-el.clientHeight/2; el.scrollTo({top:r,behavior:SMOOTH})}
+}
+
+D.subs.forEach(s=>{const d=document.createElement('div');d.className='row';
+  d.innerHTML='<b></b><span></span>';
+  d.querySelector('b').textContent=fmt(s.t);
+  d.querySelector('span').textContent=s.x;
+  d.onclick=()=>go(s.t); document.getElementById('subs').appendChild(d)});
+const mk=document.getElementById('mk');
+D.subs.forEach(s=>{const i=document.createElement('i');
+  i.style.left=(s.t/D.dur*100)+'%'; mk.appendChild(i)});
+
+function go(t){a.currentTime=Math.min(Math.max(0,t)+0.01,Math.max(0.05,D.dur-0.05)); paint(a.currentTime)}
+pp.onclick=()=>a.paused?a.play():a.pause();
+const SPEEDS=[1,1.25,1.5,1.75,2,3,0.75],SPN=['等速','1.25倍','1.5倍','1.75倍','2倍','3倍','0.75倍'];
+let si=0; const sp=document.getElementById('sp');
+sp.onclick=()=>{si=(si+1)%SPEEDS.length; a.playbackRate=SPEEDS[si];
+  a.preservesPitch=a.mozPreservesPitch=a.webkitPreservesPitch=true; sp.textContent=SPN[si]};
+a.onplay=()=>pp.textContent='❚❚ 停止'; a.onpause=()=>pp.textContent='▶ 再生';
+a.ontimeupdate=()=>paint(a.currentTime);
+sk.oninput=()=>{sk.dragging=1; go(sk.value/1000*D.dur)};
+sk.onchange=()=>sk.dragging=0;
+document.getElementById('pv').onclick=()=>{const i=subIdx(a.currentTime);
+  go(i>0?D.subs[i-1].t:0)};
+document.getElementById('nx').onclick=()=>{const i=subIdx(a.currentTime);
+  if(i+1<D.subs.length) go(D.subs[i+1].t)};
+addEventListener('keydown',e=>{const k=e.key;
+  if(k===' '){e.preventDefault();pp.onclick()}
+  else if(k==='ArrowRight')go(a.currentTime+5); else if(k==='ArrowLeft')go(a.currentTime-5);
+  else if(k==='ArrowDown'){e.preventDefault();document.getElementById('nx').onclick()}
+  else if(k==='ArrowUp'){e.preventDefault();document.getElementById('pv').onclick()}
+  else if(k==='s'||k==='S')sp.onclick()});
+paint(0);
+</script>
