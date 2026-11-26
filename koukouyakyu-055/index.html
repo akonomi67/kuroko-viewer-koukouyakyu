@@ -1,0 +1,133 @@
+<title>佐賀北の73回</title>
+<style>
+:root{--bg:#f6f4f1;--panel:#fffefc;--ink:#1c1a19;--dim:#6e6862;--line:#e2ded7;--accent:#b8422f}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#17161a;--panel:#201e23;--ink:#ece8e4;--dim:#9b948d;--line:#33303a;--accent:#e0705a}}
+:root[data-theme="dark"]{--bg:#17161a;--panel:#201e23;--ink:#ece8e4;--dim:#9b948d;--line:#33303a;--accent:#e0705a}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);margin:0;-webkit-text-size-adjust:100%;
+  font:16px/1.7 -apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic UI",sans-serif}
+.wrap{max-width:1000px;margin:0 auto;padding:16px}
+h1{font-size:17px;margin:4px 0 14px;font-weight:600;letter-spacing:.02em}
+.meta{color:var(--dim);font-size:13px;font-weight:400;margin-left:8px}
+.stage{background:var(--panel);border:1px solid var(--line);border-radius:12px;position:relative;
+  min-height:40vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:46px 20px 26px;box-shadow:0 2px 14px rgba(0,0,0,.10)}
+#now{margin:0;text-align:center;white-space:pre-wrap;word-break:break-word;font-weight:700;
+  font-size:clamp(23px,5.4vw,42px);line-height:1.5;letter-spacing:.01em}
+#nextline{margin:16px 0 0;text-align:center;white-space:pre-wrap;word-break:break-word;
+  color:var(--dim);font-size:clamp(13px,2.8vw,17px);line-height:1.6}
+.badge{position:absolute;left:12px;top:12px;background:rgba(127,127,127,.16);color:var(--dim);
+  font-size:12px;padding:3px 9px;border-radius:20px;line-height:1.6;letter-spacing:.04em}
+.bar{display:flex;align-items:center;gap:10px;margin:12px 0 6px;flex-wrap:wrap}
+button{background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:8px;
+  padding:9px 14px;font-size:15px;cursor:pointer;font-family:inherit}
+button:active{transform:translateY(1px)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button.play{background:var(--accent);color:#fff;border-color:transparent;min-width:80px;font-weight:600}
+.time{font-variant-numeric:tabular-nums;color:var(--dim);font-size:13px;margin-left:auto}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.marks{position:relative;height:7px;margin:2px 0 14px}
+.marks i{position:absolute;top:0;width:1px;height:7px;background:var(--line)}
+.tabs{display:flex;gap:6px;margin:18px 0 10px;border-bottom:1px solid var(--line)}
+.tabs button{border:0;border-bottom:2px solid transparent;border-radius:0;background:none;
+  color:var(--ink);padding:7px 12px;font-weight:600}
+.list{max-height:46vh;overflow:auto;border:1px solid var(--line);border-radius:10px;background:var(--panel);
+  -webkit-overflow-scrolling:touch}
+.row{display:flex;gap:12px;padding:11px 14px;border-bottom:1px solid var(--line);cursor:pointer}
+.row:last-child{border-bottom:0}
+.row:hover{background:rgba(127,127,127,.07)}
+.row.on{background:rgba(184,66,47,.12)}
+.row b{color:var(--dim);font-variant-numeric:tabular-nums;font-weight:500;font-size:13px;
+  min-width:48px;flex:none;padding-top:2px}
+.row span{white-space:pre-wrap;flex:1;font-size:16px;line-height:1.65}
+.tip{color:var(--dim);font-size:12.5px;margin:10px 2px 0}
+@media(max-width:620px){.wrap{padding:10px}.time{font-size:12px}
+  .bar button{padding:9px 11px;font-size:14px}.stage{padding:42px 14px 22px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+<div class="wrap">
+<h1 id="ttl"></h1>
+<div class="stage"><div class="badge" id="bdg"></div>
+  <p id="now"></p><p id="nextline"></p></div>
+<div class="bar">
+  <button class="play" id="pp">▶ 再生</button>
+  <button id="pv">◀ 前の字幕</button>
+  <button id="nx">次の字幕 ▶</button>
+  <button id="sp">等速</button>
+  <span class="time" id="tm">0:00 / 0:00</span>
+</div>
+<input type="range" id="sk" min="0" max="1000" value="0">
+<div class="marks" id="mk"></div>
+<div class="tabs"><button class="on">字幕</button></div>
+<div class="list" id="subs"></div>
+<p class="tip">スペース＝再生/停止　←→＝5秒送り　↑↓＝字幕送り。字幕をタップするとそこへ飛びます。</p>
+</div>
+<audio id="a" src="audio.mp3" preload="auto"></audio>
+<script>
+const D={"name": "佐賀北の73回", "file": "055_編集用", "dur": 620.56665625, "segs": [], "subs": [{"t": 0.0, "x": "今日は何を数えるの？"}, {"t": 1.5, "x": "ある学校が1つの夏に戦った回の数だ。"}, {"t": 4.3, "x": "2007年の夏の話だ。"}, {"t": 6.316666666666666, "x": "9回の試合が5つ。15回と\n13回の試合が1つずつあった。"}, {"t": 10.683333333333334, "x": "15回とか13回とか、長い試合がまじっているわ。"}, {"t": 14.216666666666667, "x": "ああ。7つの試合を足すと73回になる。"}, {"t": 17.233333333333334, "x": "1試合が9回だから8試合ぶんより多いわ。"}, {"t": 20.033333333333335, "x": "そうだ。そして7試合目が決勝だった。"}, {"t": 22.666666666666668, "x": "その決勝は7回を終えて0対4。"}, {"t": 24.783333333333335, "x": "負けている側がこの学校だ。"}, {"t": 26.816666666666666, "x": "4点も負けていたの？"}, {"t": 28.366666666666667, "x": "ところが8回の裏に5点を入れて、5対4で勝った。"}, {"t": 31.65, "x": "佐賀の県立高校、佐賀北の初めての優勝だ。"}, {"t": 35.0, "x": "初めてで、いきなり優勝しちゃったの？"}, {"t": 37.5, "x": "甲子園は2度目だった。"}, {"t": 38.85, "x": "1度目は1つも勝てずに帰っている。"}, {"t": 41.3, "x": "じゃあ、どんな学校が、どうやって73回も戦ったの？"}, {"t": 45.13333333333333, "x": "日本高野連の一覧と試合の記録、それに\n学校のあゆみを1つずつ開いていこう。"}, {"t": 50.15, "x": "その前にチャンネル登録と\n高評価をしてもらえるとうれしい。"}, {"t": 53.583333333333336, "x": "押してもらえたら、私も助かるわ。"}, {"t": 56.55, "x": "佐賀北って、どこにある学校なの？"}, {"t": 58.96666666666667, "x": "佐賀市の天祐という所にある、県立の高校だ。"}, {"t": 62.1, "x": "学校のあゆみを読むと始まりが少し変わっている。"}, {"t": 65.03333333333333, "x": "1949年に佐賀の3つの学校が1つにまとまった。"}, {"t": 69.08333333333333, "x": "できたのは県立の佐賀高校だ。"}, {"t": 71.28333333333333, "x": "その時は、まだ佐賀北という名前じゃなかったの？"}, {"t": 74.41666666666667, "x": "まだだ。その佐賀高校を、\n1962年に県が2つに分けた。"}, {"t": 78.91666666666667, "x": "分かれてできたのが、佐賀北と佐賀西だ。"}, {"t": 81.73333333333333, "x": "1つの学校が、北と西に分かれたってこと？"}, {"t": 84.86666666666666, "x": "そうだ。佐賀北の最初の入学式は1963年。"}, {"t": 88.8, "x": "12組で645人の1年生が入った。"}, {"t": 92.08333333333333, "x": "最初の年から600人以上なんて、大きな学校だわ。"}, {"t": 95.71666666666667, "x": "1988年には普通の科に芸術の組が1つ足された。"}, {"t": 100.0, "x": "今は芸術科になっていて音楽と美術と書道を学べる。"}, {"t": 103.53333333333333, "x": "野球の学校、という感じはしないわ。"}, {"t": 106.0, "x": "ああ。学校のあゆみで野球が\n出てくるのは2007年の1行だけだ。"}, {"t": 110.03333333333333, "x": "「第89回全国高等学校野球選手権大会初優勝」。"}, {"t": 114.36666666666666, "x": "60年以上のあゆみの中で、たった1行なのね。"}, {"t": 117.68333333333334, "x": "その1行の前にまず1度目の甲子園を見ておこう。"}, {"t": 121.31666666666666, "x": "日本高野連の出場校の一覧で佐賀北が\n初めて出てくるのは2000年だ。"}, {"t": 125.96666666666667, "x": "第82回大会の佐賀の代表が佐賀北だった。"}, {"t": 129.4, "x": "初めての甲子園は、どうだったの？"}, {"t": 131.73333333333332, "x": "最初の試合は2回戦。"}, {"t": 133.11666666666667, "x": "相手は神奈川の横浜だ。"}, {"t": 134.93333333333334, "x": "記録のサイトでは、1回の表に\n佐賀北が1点を先に入れている。"}, {"t": 139.11666666666667, "x": "先に点を取ったんだ。"}, {"t": 140.66666666666666, "x": "だがその裏に横浜が2点。そのあと\n5回に6点と7回と8回に2点ずつだ。"}, {"t": 145.8, "x": "1対12で負けた。"}, {"t": 147.35, "x": "11点差って、かなり大きな差よ。"}, {"t": 149.76666666666668, "x": "ああ。1度目の甲子園は1つも勝てずに終わった。"}, {"t": 152.78333333333333, "x": "そのあとの4年は、佐賀の代表は\n毎年ちがう学校だった。"}, {"t": 156.45, "x": "2005年と2006年は2年続けて佐賀商だった。"}, {"t": 159.91666666666666, "x": "佐賀北の名前は、しばらく出てこないわけか。"}, {"t": 162.83333333333334, "x": "そうだ。次に出てくるのは\n7年後の2007年。第89回大会だ。"}, {"t": 167.58333333333334, "x": "この年、全国で参加した学校は4081校。"}, {"t": 171.03333333333333, "x": "甲子園に来たのは49校だった。"}, {"t": 173.56666666666666, "x": "4081校の中の、佐賀の1校ってわけよ。"}, {"t": 176.96666666666667, "x": "ちなみに佐賀大会の準々決勝の相手は佐賀西だった。"}, {"t": 180.56666666666666, "x": "えっ、分かれたもう1つの学校？"}, {"t": 182.83333333333334, "x": "そうだ。スポーツ雑誌の記事では、\n当時の選手がこの試合を山場に挙げている。"}, {"t": 187.4, "x": "満塁のピンチを、3人続けて\n三振にとって切り抜けたそうだ。"}, {"t": 191.9, "x": "甲子園での1試合目は、どこが相手だったの？"}, {"t": 194.8, "x": "福井の福井商だ。しかも大会で\nいちばん最初の試合だった。"}, {"t": 198.55, "x": "野球の専門サイトの記事にも「開幕戦」と書いてある。"}, {"t": 202.2, "x": "大会の最初の試合を、佐賀北がやったんだ。"}, {"t": 205.16666666666666, "x": "ああ。3回に1点を入れて8回にもう1点。"}, {"t": 207.98333333333332, "x": "福井商は9回まで0点。"}, {"t": 209.6, "x": "2対0で佐賀北が勝った。"}, {"t": 211.6, "x": "これが、甲子園での初めての1勝になるの？"}, {"t": 214.5, "x": "そうなる。2000年に勝てなかった\n学校が7年後の最初の試合で勝った。"}, {"t": 219.01666666666668, "x": "ここから、あと6試合も続くわけね。"}, {"t": 221.58333333333334, "x": "そうだ。そして次の試合がいちばん長くなる。"}, {"t": 225.03333333333333, "x": "2回戦の相手は三重の宇治山田商だ。"}, {"t": 227.4, "x": "1回に佐賀北が2点を入れた。"}, {"t": 229.53333333333333, "x": "また先に点を取ったわ。"}, {"t": 231.2, "x": "だが5回に、宇治山田商が4点を入れて逆に2対4。"}, {"t": 234.6, "x": "佐賀北は6回と7回に1点ずつ\n返して4対4に追いついた。"}, {"t": 238.73333333333332, "x": "そこからは、どっちが勝ったの？"}, {"t": 240.78333333333333, "x": "8回からはどちらにも点が入らない。"}, {"t": 243.06666666666666, "x": "9回が終わっても4対4。延長に入った。"}, {"t": 245.93333333333334, "x": "延長に入っても0が並び、15回まで来た。"}, {"t": 249.08333333333334, "x": "15回でも決まらなかったら、どうなるの？"}, {"t": 251.75, "x": "引き分けになった。\n記録のサイトの表にも、そう書いてある。"}, {"t": 255.31666666666666, "x": "野球の専門サイトの記事では\n「延長15回の引き分け再試合」だ。"}, {"t": 259.75, "x": "15回も戦ったのに、勝ちも負けもつかないなんて。"}, {"t": 263.18333333333334, "x": "ああ。そしてやり直しの試合をすることになった。"}, {"t": 266.01666666666665, "x": "やり直しの試合は4回に佐賀北が1点を入れて動いた。"}, {"t": 269.4166666666667, "x": "そして6回から8回までに8点を足した。"}, {"t": 272.31666666666666, "x": "今度は、点がたくさん入ったわ。"}, {"t": 274.53333333333336, "x": "宇治山田商は3回の1点だけ。"}, {"t": 276.56666666666666, "x": "9対1で佐賀北が勝った。"}, {"t": 278.6, "x": "この2回戦だけで、何回ぶん戦ったことになるの？"}, {"t": 282.0833333333333, "x": "15回と9回で24回だ。"}, {"t": 284.1, "x": "普通の試合の2試合半を超える。"}, {"t": 286.28333333333336, "x": "1つ勝つまでに、24回もかかったのね。"}, {"t": 289.81666666666666, "x": "3回戦の相手は群馬の前橋商だ。"}, {"t": 292.28333333333336, "x": "2回に両方が2点ずつ入れた。"}, {"t": 294.25, "x": "そのあと佐賀北が3回と4回と7回に1点ずつを足した。"}, {"t": 298.21666666666664, "x": "じわじわと、差を広げていったんだ。"}, {"t": 300.53333333333336, "x": "ああ。前橋商は2回の2点だけ。"}, {"t": 302.6666666666667, "x": "5対2で佐賀北が勝った。"}, {"t": 304.43333333333334, "x": "これで8強だ。準々決勝の相手は東東京の帝京だった。"}, {"t": 308.68333333333334, "x": "帝京って、強い学校で有名よね。"}, {"t": 311.2, "x": "記事でも強豪と書かれている。"}, {"t": 312.85, "x": "佐賀北は1回から3回まで1点ずつ入れた。"}, {"t": 315.8, "x": "帝京は2回に1点を返し4回に2点を入れて3対3になる。"}, {"t": 319.85, "x": "また追いつかれちゃったの？"}, {"t": 321.4166666666667, "x": "ああ。そしてここからまた0が並ぶ。"}, {"t": 323.7, "x": "5回から12回まで、両方とも点が入らない。"}, {"t": 326.8833333333333, "x": "8つの回も、どっちも点を取れなかったなんて。"}, {"t": 329.9166666666667, "x": "13回の裏、佐賀北が1点を入れた。"}, {"t": 332.43333333333334, "x": "4対3のサヨナラだ。"}, {"t": 334.18333333333334, "x": "また延長だったの？これで2試合目よ。"}, {"t": 336.6666666666667, "x": "そうだ。15回と13回。"}, {"t": 338.48333333333335, "x": "延長の試合を2つ越えて4強に入った。"}, {"t": 341.2, "x": "日本高野連の大会小史にはこの夏の九州のこともある。"}, {"t": 344.8833333333333, "x": "8強に九州の学校が3校残った、と書いてある。"}, {"t": 348.93333333333334, "x": "準決勝の相手は、どこだったの？"}, {"t": 351.25, "x": "となりの県、長崎の長崎日大だ。"}, {"t": 354.0, "x": "九州の学校どうしで、決勝をかけた試合だわ。"}, {"t": 357.1333333333333, "x": "ああ。佐賀北は2回と4回に1点ずつ入れた。"}, {"t": 360.1, "x": "7回にも1点。長崎日大には1点も入らなかった。"}, {"t": 363.8333333333333, "x": "3対0で佐賀北が勝った。"}, {"t": 365.8666666666667, "x": "0点に抑えた試合は、これで2つ目かしら？"}, {"t": 368.8, "x": "そうだ。開幕試合の福井商と、\nこの長崎日大の2つになる。"}, {"t": 373.18333333333334, "x": "点を取られなかった試合が、2つもあったんだ。"}, {"t": 376.1333333333333, "x": "ここまでの6試合で佐賀北が戦ったのは64回だ。"}, {"t": 379.73333333333335, "x": "残るは決勝の1試合。"}, {"t": 381.1333333333333, "x": "相手は広島の広陵だった。"}, {"t": 383.68333333333334, "x": "決勝は広陵が先に点を入れた。"}, {"t": 385.65, "x": "2回の表に2点だ。"}, {"t": 387.4, "x": "佐賀北は、すぐ返したの？"}, {"t": 389.3833333333333, "x": "いや、返せない。3回から\n7回まで、佐賀北の列は0のままだ。"}, {"t": 393.76666666666665, "x": "そして7回の表に広陵がまた2点を足した。"}, {"t": 396.8666666666667, "x": "これで0対4になったのね。"}, {"t": 398.81666666666666, "x": "そうだ。残りは8回と9回の2つしかない。"}, {"t": 401.96666666666664, "x": "4点差で、あと2回しかないなんて。"}, {"t": 404.43333333333334, "x": "8回の裏、佐賀北の打つ番になる。"}, {"t": 406.9, "x": "塁が埋まって、満塁から四球で\n1点が入った。押し出しだ。"}, {"t": 410.81666666666666, "x": "やっと1点。でも、まだ1対4よ。"}, {"t": 413.3833333333333, "x": "満塁のまま、チームの主力の打者、\n副島浩史が打席に入った。"}, {"t": 417.68333333333334, "x": "打った球は、そのまま本塁打になった。"}, {"t": 420.3, "x": "満塁で本塁打なら、一気に4点よ。"}, {"t": 422.9166666666667, "x": "ああ。1対4から5対4。"}, {"t": 424.6166666666667, "x": "佐賀北が前に出た。"}, {"t": 426.06666666666666, "x": "9回の表、広陵は点を取れなかった。"}, {"t": 428.55, "x": "5対4で試合が終わった。"}, {"t": 430.3666666666667, "x": "最後の最後で、ひっくり返したのね。"}, {"t": 432.9, "x": "日本高野連の大会小史は、この打球を決勝で\n史上初の逆転満塁本塁打と書いている。"}, {"t": 438.6166666666667, "x": "そして公立校として11年ぶりの優勝とも書いている。"}, {"t": 442.18333333333334, "x": "佐賀の学校が優勝するのは、初めてだったの？"}, {"t": 445.3, "x": "いや、1994年に佐賀商が優勝している。"}, {"t": 448.5, "x": "佐賀北は佐賀の2校目だ。"}, {"t": 450.3, "x": "佐賀北にとっては学校で初めての優勝になった。"}, {"t": 454.03333333333336, "x": "あらためて、7試合で何点取って、何点取られたの？"}, {"t": 457.6166666666667, "x": "記録の表から足してみた。"}, {"t": 459.18333333333334, "x": "取った点は全部で32点だ。"}, {"t": 461.31666666666666, "x": "いちばん多く取ったのは、やり直しの試合の9点だ。"}, {"t": 464.5833333333333, "x": "取られた点は、どのくらいなの？"}, {"t": 466.6333333333333, "x": "取られたのは合わせて14点だ。"}, {"t": 468.43333333333334, "x": "0点の試合が2つある。"}, {"t": 470.26666666666665, "x": "73回で14点なら、5回に1点くらいね。"}, {"t": 473.71666666666664, "x": "そうなる。そして7試合のうち、4点より\n大きな差で勝ったのは1つだけだ。"}, {"t": 478.53333333333336, "x": "それって、どの試合のこと？"}, {"t": 480.45, "x": "宇治山田商とのやり直しの試合、9対1だ。"}, {"t": 483.3666666666667, "x": "ほかの5つの勝ちは、1点差か2点差か3点差だ。"}, {"t": 486.9, "x": "じゃあ、ほとんどが接戦だったの？"}, {"t": 489.05, "x": "ああ。しかも15回の試合は勝ちにも\n負けにも数えられていない。"}, {"t": 492.68333333333334, "x": "この夏の佐賀北は、のちに\n「がばい旋風」と呼ばれた。"}, {"t": 496.3666666666667, "x": "がばいって、どういう意味なの？"}, {"t": 498.25, "x": "佐賀県の資料では、がばいは\n佐賀の言葉で「すごく」だ。"}, {"t": 501.8, "x": "スポーツの記事はこの呼び名が\n流行語になったと書いている。"}, {"t": 505.15, "x": "すごい風、という意味の呼び名だったんだ。"}, {"t": 508.2, "x": "優勝のあと、佐賀北はまた甲子園に来たの？"}, {"t": 511.2, "x": "日本高野連の一覧では2012年と2014年と\n2019年に佐賀の代表になっている。"}, {"t": 517.1333333333333, "x": "2012年は宮城の仙台育英に2対8。"}, {"t": 520.0666666666667, "x": "2014年は同じ宮城の利府に2対4。"}, {"t": 522.7, "x": "2019年は鹿児島の神村学園に2対7だった。"}, {"t": 526.4, "x": "3回とも、最初の試合で負けちゃったのね。"}, {"t": 529.3, "x": "ああ。次は2025年の夏だ。"}, {"t": 531.45, "x": "1回戦の相手は栃木の青藍泰斗。"}, {"t": 533.95, "x": "4対4で延長に入り、10回の裏に\n1点を入れて5対4で勝った。"}, {"t": 538.3333333333334, "x": "また延長で、しかもサヨナラだわ。"}, {"t": 540.6333333333333, "x": "野球の専門サイトの記事では\n甲子園の1勝は2007年から18年ぶりだ。"}, {"t": 545.4333333333333, "x": "2回戦は大分の明豊に1対6で負けている。"}, {"t": 548.5166666666667, "x": "2026年の夏は、どうなったの？"}, {"t": 551.1666666666666, "x": "2026年の佐賀の代表は佐賀商だ。"}, {"t": 553.75, "x": "佐賀北ではなかった。"}, {"t": 555.2166666666667, "x": "数えると佐賀北の夏の甲子園は\n2025年までで6度になる。"}, {"t": 559.3833333333333, "x": "6度のうち、優勝が1度あるってわけか。"}, {"t": 562.1166666666667, "x": "そうだ。勝ちの数は2007年に\n6つ、2025年に1つだけだ。"}, {"t": 567.35, "x": "まとめると、佐賀北ってどういう学校なの？"}, {"t": 570.1166666666667, "x": "1962年に佐賀高校が分かれてできた\n佐賀市の県立高校だ。"}, {"t": 574.6, "x": "芸術科もある学校で、あゆみに\n野球が出てくるのは1行だけだ。"}, {"t": 578.65, "x": "1度目の甲子園は、1対12で負けたのよね。"}, {"t": 581.7833333333333, "x": "ああ。その7年後に開幕試合から決勝まで7つ戦った。"}, {"t": 585.8166666666667, "x": "どうやって、73回も戦えたの？"}, {"t": 588.5, "x": "15回で決まらない試合はやり直して\n勝ち、13回の試合はサヨナラで勝った。"}, {"t": 593.2, "x": "大きな差で勝ったのは、やり直しの試合だけだった。"}, {"t": 596.2666666666667, "x": "最後は0対4から、8回の裏の5点でひっくり返した。"}, {"t": 600.1166666666667, "x": "1つずつの接戦を、最後まで落とさなかったのね。"}, {"t": 603.4, "x": "そうだ。その73回の最後の1回が、\n学校のあゆみの1行になった。"}, {"t": 608.2666666666667, "x": "次に佐賀北の名前が一覧に出たら、\nまた回の数を足してみたいわ。"}, {"t": 612.5833333333334, "x": "その時は、今日の73回と比べてみよう。"}, {"t": 615.6666666666666, "x": "最後まで見てくれてありがとう。"}, {"t": 617.25, "x": "チャンネル登録で次の回も待っていてね。"}], "w": 720, "h": 405, "n_cuts": 0, "noimage": true};
+const a=document.getElementById('a');
+const now=document.getElementById('now'), nl=document.getElementById('nextline');
+const pp=document.getElementById('pp'), sk=document.getElementById('sk');
+const tm=document.getElementById('tm'), bdg=document.getElementById('bdg');
+const SMOOTH=matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth';
+document.getElementById('ttl').innerHTML=D.name+
+  '<span class="meta">'+fmt(D.dur)+'　字幕'+D.subs.length+'　（音声＋字幕だけ）</span>';
+
+function fmt(s){s=Math.max(0,s|0);return (s/60|0)+':'+String(s%60).padStart(2,'0')}
+function subIdx(t){let lo=0,hi=D.subs.length-1,r=-1;
+  while(lo<=hi){const m=(lo+hi)>>1; if(D.subs[m].t<=t){r=m;lo=m+1}else hi=m-1} return r}
+
+let cur=-2;
+function paint(t){
+  const i=subIdx(t);
+  if(i!==cur){cur=i;
+    now.textContent = i<0 ? (D.subs.length?'（ここはまだ字幕がありません）'
+                                          :'（この回に字幕はありません）')
+                         : D.subs[i].x;
+    const n=D.subs[i+1]; nl.textContent = n ? '次　'+n.x : '';
+    bdg.textContent = D.subs.length ? '字幕 '+(i+1)+' / '+D.subs.length : '字幕なし';
+    mark('subs',i);
+  }
+  tm.textContent=fmt(t)+' / '+fmt(D.dur);
+  if(!sk.dragging) sk.value=Math.round(t/D.dur*1000);
+}
+function mark(pane,i){
+  const el=document.getElementById(pane);
+  if(el.dataset.on==i) return; el.dataset.on=i;
+  el.querySelectorAll('.on').forEach(x=>x.classList.remove('on'));
+  const t=el.children[i]; if(!t) return; t.classList.add('on');
+  if(!el.hidden){const r=t.offsetTop-el.clientHeight/2; el.scrollTo({top:r,behavior:SMOOTH})}
+}
+
+D.subs.forEach(s=>{const d=document.createElement('div');d.className='row';
+  d.innerHTML='<b></b><span></span>';
+  d.querySelector('b').textContent=fmt(s.t);
+  d.querySelector('span').textContent=s.x;
+  d.onclick=()=>go(s.t); document.getElementById('subs').appendChild(d)});
+const mk=document.getElementById('mk');
+D.subs.forEach(s=>{const i=document.createElement('i');
+  i.style.left=(s.t/D.dur*100)+'%'; mk.appendChild(i)});
+
+function go(t){a.currentTime=Math.min(Math.max(0,t)+0.01,Math.max(0.05,D.dur-0.05)); paint(a.currentTime)}
+pp.onclick=()=>a.paused?a.play():a.pause();
+const SPEEDS=[1,1.25,1.5,1.75,2,3,0.75],SPN=['等速','1.25倍','1.5倍','1.75倍','2倍','3倍','0.75倍'];
+let si=0; const sp=document.getElementById('sp');
+sp.onclick=()=>{si=(si+1)%SPEEDS.length; a.playbackRate=SPEEDS[si];
+  a.preservesPitch=a.mozPreservesPitch=a.webkitPreservesPitch=true; sp.textContent=SPN[si]};
+a.onplay=()=>pp.textContent='❚❚ 停止'; a.onpause=()=>pp.textContent='▶ 再生';
+a.ontimeupdate=()=>paint(a.currentTime);
+sk.oninput=()=>{sk.dragging=1; go(sk.value/1000*D.dur)};
+sk.onchange=()=>sk.dragging=0;
+document.getElementById('pv').onclick=()=>{const i=subIdx(a.currentTime);
+  go(i>0?D.subs[i-1].t:0)};
+document.getElementById('nx').onclick=()=>{const i=subIdx(a.currentTime);
+  if(i+1<D.subs.length) go(D.subs[i+1].t)};
+addEventListener('keydown',e=>{const k=e.key;
+  if(k===' '){e.preventDefault();pp.onclick()}
+  else if(k==='ArrowRight')go(a.currentTime+5); else if(k==='ArrowLeft')go(a.currentTime-5);
+  else if(k==='ArrowDown'){e.preventDefault();document.getElementById('nx').onclick()}
+  else if(k==='ArrowUp'){e.preventDefault();document.getElementById('pv').onclick()}
+  else if(k==='s'||k==='S')sp.onclick()});
+paint(0);
+</script>
