@@ -1,0 +1,133 @@
+<title>津久見の9回からの勝ち</title>
+<style>
+:root{--bg:#f6f4f1;--panel:#fffefc;--ink:#1c1a19;--dim:#6e6862;--line:#e2ded7;--accent:#b8422f}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#17161a;--panel:#201e23;--ink:#ece8e4;--dim:#9b948d;--line:#33303a;--accent:#e0705a}}
+:root[data-theme="dark"]{--bg:#17161a;--panel:#201e23;--ink:#ece8e4;--dim:#9b948d;--line:#33303a;--accent:#e0705a}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);margin:0;-webkit-text-size-adjust:100%;
+  font:16px/1.7 -apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic UI",sans-serif}
+.wrap{max-width:1000px;margin:0 auto;padding:16px}
+h1{font-size:17px;margin:4px 0 14px;font-weight:600;letter-spacing:.02em}
+.meta{color:var(--dim);font-size:13px;font-weight:400;margin-left:8px}
+.stage{background:var(--panel);border:1px solid var(--line);border-radius:12px;position:relative;
+  min-height:40vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:46px 20px 26px;box-shadow:0 2px 14px rgba(0,0,0,.10)}
+#now{margin:0;text-align:center;white-space:pre-wrap;word-break:break-word;font-weight:700;
+  font-size:clamp(23px,5.4vw,42px);line-height:1.5;letter-spacing:.01em}
+#nextline{margin:16px 0 0;text-align:center;white-space:pre-wrap;word-break:break-word;
+  color:var(--dim);font-size:clamp(13px,2.8vw,17px);line-height:1.6}
+.badge{position:absolute;left:12px;top:12px;background:rgba(127,127,127,.16);color:var(--dim);
+  font-size:12px;padding:3px 9px;border-radius:20px;line-height:1.6;letter-spacing:.04em}
+.bar{display:flex;align-items:center;gap:10px;margin:12px 0 6px;flex-wrap:wrap}
+button{background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:8px;
+  padding:9px 14px;font-size:15px;cursor:pointer;font-family:inherit}
+button:active{transform:translateY(1px)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button.play{background:var(--accent);color:#fff;border-color:transparent;min-width:80px;font-weight:600}
+.time{font-variant-numeric:tabular-nums;color:var(--dim);font-size:13px;margin-left:auto}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.marks{position:relative;height:7px;margin:2px 0 14px}
+.marks i{position:absolute;top:0;width:1px;height:7px;background:var(--line)}
+.tabs{display:flex;gap:6px;margin:18px 0 10px;border-bottom:1px solid var(--line)}
+.tabs button{border:0;border-bottom:2px solid transparent;border-radius:0;background:none;
+  color:var(--ink);padding:7px 12px;font-weight:600}
+.list{max-height:46vh;overflow:auto;border:1px solid var(--line);border-radius:10px;background:var(--panel);
+  -webkit-overflow-scrolling:touch}
+.row{display:flex;gap:12px;padding:11px 14px;border-bottom:1px solid var(--line);cursor:pointer}
+.row:last-child{border-bottom:0}
+.row:hover{background:rgba(127,127,127,.07)}
+.row.on{background:rgba(184,66,47,.12)}
+.row b{color:var(--dim);font-variant-numeric:tabular-nums;font-weight:500;font-size:13px;
+  min-width:48px;flex:none;padding-top:2px}
+.row span{white-space:pre-wrap;flex:1;font-size:16px;line-height:1.65}
+.tip{color:var(--dim);font-size:12.5px;margin:10px 2px 0}
+@media(max-width:620px){.wrap{padding:10px}.time{font-size:12px}
+  .bar button{padding:9px 11px;font-size:14px}.stage{padding:42px 14px 22px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+<div class="wrap">
+<h1 id="ttl"></h1>
+<div class="stage"><div class="badge" id="bdg"></div>
+  <p id="now"></p><p id="nextline"></p></div>
+<div class="bar">
+  <button class="play" id="pp">▶ 再生</button>
+  <button id="pv">◀ 前の字幕</button>
+  <button id="nx">次の字幕 ▶</button>
+  <button id="sp">等速</button>
+  <span class="time" id="tm">0:00 / 0:00</span>
+</div>
+<input type="range" id="sk" min="0" max="1000" value="0">
+<div class="marks" id="mk"></div>
+<div class="tabs"><button class="on">字幕</button></div>
+<div class="list" id="subs"></div>
+<p class="tip">スペース＝再生/停止　←→＝5秒送り　↑↓＝字幕送り。字幕をタップするとそこへ飛びます。</p>
+</div>
+<audio id="a" src="audio.mp3" preload="auto"></audio>
+<script>
+const D={"name": "津久見の9回からの勝ち", "file": "056_編集用", "dur": 590.76665625, "segs": [], "subs": [{"t": 0.0, "x": "今日はどこの学校の話なの？"}, {"t": 2.066666666666667, "x": "大分の津久見だ。春と夏に\n1度ずつ、甲子園で優勝している。"}, {"t": 6.116666666666666, "x": "1967年の春に4つ、1972年の夏に5つ勝った。"}, {"t": 11.383333333333333, "x": "優勝した2つの大会で、9試合も戦ったのね。"}, {"t": 14.916666666666666, "x": "ああ。そして9試合で1つも負けていない。"}, {"t": 17.533333333333335, "x": "しかも9つの勝ちのうち4つは、\n9回から先の点で決まった。"}, {"t": 21.733333333333334, "x": "最後の最後で勝った試合が、半分近くもあるの？"}, {"t": 24.983333333333334, "x": "そうだ。もう1つ数がある。"}, {"t": 26.65, "x": "大分の学校の甲子園の優勝は、今もこの2度だけだ。"}, {"t": 30.35, "x": "えっ、大分の優勝は全部が津久見ってこと？"}, {"t": 33.233333333333334, "x": "春の決勝の一覧にも夏の一覧にも、\n大分の優勝はこの2つしか無い。"}, {"t": 38.05, "x": "じゃあ、どんな町の学校が、\nどうやって終わりぎわの勝ちを重ねたの？"}, {"t": 42.11666666666667, "x": "日本高野連の一覧と記録のサイト、\nそれに町と学校の資料を1つずつ開こう。"}, {"t": 47.266666666666666, "x": "その前にチャンネル登録と\n高評価をしてもらえるとうれしい。"}, {"t": 50.666666666666664, "x": "ボタンを1つ押すだけで、すごく助かるのよ。"}, {"t": 54.11666666666667, "x": "津久見って、どんな町なの？"}, {"t": 56.06666666666667, "x": "大分県の津久見市だ。"}, {"t": 57.43333333333333, "x": "市の計画には、石灰石と\nセメントの仕事が町の柱だと書いてある。"}, {"t": 62.1, "x": "石灰石って、セメントの材料になる石よね。"}, {"t": 65.21666666666667, "x": "そうだ。計画には人の数も書いてある。\nいちばん多かったのは1960年で3万7164人。"}, {"t": 72.08333333333333, "x": "そのうち14歳までの子どもは1万2861人いた。"}, {"t": 76.3, "x": "子どもだけで1万人をこえていたんだ。"}, {"t": 78.71666666666667, "x": "ああ。2025年の春の人口は1万4844人だ。"}, {"t": 83.23333333333333, "x": "60年あまりで、半分より少なくなったわけか。"}, {"t": 86.5, "x": "この町の県立高校が津久見高校だ。"}, {"t": 89.03333333333333, "x": "日本高野連の一覧で津久見が夏に\n初めて出てくるのは1952年だ。"}, {"t": 94.01666666666667, "x": "最初の夏は、どうだったの？"}, {"t": 96.0, "x": "記録のサイトでは1回戦で負けている。"}, {"t": 98.2, "x": "3年後の1955年は8強まで進んだ。"}, {"t": 101.58333333333333, "x": "1960年代に入ると、1963年と1965年と\n1966年の夏に名前が出てくる。"}, {"t": 109.73333333333333, "x": "4年で3度も来ていたなんて。"}, {"t": 111.71666666666667, "x": "そして1967年の春、初めて春の甲子園に出る。"}, {"t": 116.46666666666667, "x": "春の大会は、夏とどこが違うの？"}, {"t": 119.0, "x": "春は選ばれた学校が出る\n大会だ。この年は24校だった。"}, {"t": 122.93333333333334, "x": "記録のサイトでは津久見の最初の試合は\n2回戦になっている。"}, {"t": 126.58333333333333, "x": "いきなり2回戦から始まったのね。"}, {"t": 128.91666666666666, "x": "相手は岡山の倉敷工だ。"}, {"t": 130.65, "x": "津久見は1回に1点、4回に2点を入れた。"}, {"t": 133.55, "x": "倉敷工は7回に2点を返したが、\nそこまでだった。3対2だ。"}, {"t": 138.0, "x": "まずは1点差で、1つ勝ったわ。"}, {"t": 140.31666666666666, "x": "準々決勝の相手は岐阜の岐阜商だ。"}, {"t": 142.7, "x": "1回に1点を入れたあとは両方とも0が並んだ。"}, {"t": 145.66666666666666, "x": "9回の表に津久見がもう1点。2対0で勝った。"}, {"t": 149.03333333333333, "x": "これも9回の点で決まった試合なの？"}, {"t": 151.46666666666667, "x": "いや。勝ちを決めた点は\n1回の1点だ。だから4つには数えていない。"}, {"t": 155.83333333333334, "x": "数え方が分かってきたわ。"}, {"t": 158.15, "x": "準決勝の相手は兵庫の報徳学園だ。"}, {"t": 160.75, "x": "この試合は8回まで両方とも0だった。"}, {"t": 163.43333333333334, "x": "ずっと点が入らなかったの？"}, {"t": 165.3, "x": "ああ。9回の表、津久見がやっと1点を入れた。"}, {"t": 168.48333333333332, "x": "これで決まり、と思ったところよ。"}, {"t": 170.58333333333334, "x": "ところが9回の裏、報徳学園も1点。"}, {"t": 173.25, "x": "1対1で延長に入った。"}, {"t": 175.11666666666667, "x": "10回の表に津久見がまた1点。\nその裏は0に抑えて2対1だ。"}, {"t": 179.41666666666666, "x": "9回と10回の2つの回で、勝負がついたんだ。"}, {"t": 182.73333333333332, "x": "そうだ。これが4つのうちの1つ目になる。"}, {"t": 185.98333333333332, "x": "決勝の相手は高知の高知高校だ。\nここでは点の動きだけを見る。"}, {"t": 189.98333333333332, "x": "4回の表に津久見が1点。"}, {"t": 191.75, "x": "8回の裏に高知高校が追いついた。"}, {"t": 194.26666666666668, "x": "また延長になったの？"}, {"t": 195.78333333333333, "x": "ああ。12回の表に津久見が\n1点を入れて、2対1で勝った。"}, {"t": 199.7, "x": "これで2つ目だ。4試合のうち3つが1点差だった。"}, {"t": 203.08333333333334, "x": "スポーツ新聞の記事はこれを大分の学校で\n初めての甲子園の優勝と書いている。"}, {"t": 207.93333333333334, "x": "春に勝ったなら、夏も出てきたんでしょう？"}, {"t": 210.56666666666666, "x": "それが違う。日本高野連の一覧では、\n1967年の夏の大分の代表は大分商だ。"}, {"t": 216.91666666666666, "x": "春に優勝した学校が、夏は\n甲子園に来られなかったなんて。"}, {"t": 220.86666666666667, "x": "そうなる。津久見の次の夏は、\n1年後の1968年だった。"}, {"t": 225.46666666666667, "x": "記録のサイトではその夏は2つ\n勝って3回戦で負けている。"}, {"t": 229.11666666666667, "x": "1970年と1971年の春にも出たが、\n勝ちは合わせて1つだけだった。"}, {"t": 235.5, "x": "次の優勝は1972年の夏だ。"}, {"t": 238.21666666666667, "x": "参加は2614校、甲子園に来たのは30校だった。"}, {"t": 242.46666666666667, "x": "30校って、今よりずいぶん少ないわ。"}, {"t": 245.16666666666666, "x": "1回戦の相手は鹿児島の鹿児島商だ。"}, {"t": 247.61666666666667, "x": "津久見は1回に1点を入れた。"}, {"t": 249.55, "x": "だが鹿児島商が4回と6回に1点ずつ。"}, {"t": 252.2, "x": "1対2のまま9回の裏に入った。"}, {"t": 254.71666666666667, "x": "負けたままで、最後の攻撃なのね。"}, {"t": 257.18333333333334, "x": "ここで津久見が2点を入れた。"}, {"t": 258.76666666666665, "x": "3対2の逆転サヨナラだ。"}, {"t": 260.85, "x": "最初の試合から、いきなりひっくり返したの？"}, {"t": 263.76666666666665, "x": "そうだ。これが3つ目になる。"}, {"t": 265.6166666666667, "x": "2回戦は南北海道の苫小牧工に\n13対1。この夏いちばん大きな差だ。"}, {"t": 271.3, "x": "準々決勝の相手は大阪の明星だ。"}, {"t": 273.8, "x": "この試合は8回が終わっても0対0だった。"}, {"t": 276.7, "x": "また0が続く試合なの？"}, {"t": 278.48333333333335, "x": "ああ。9回の表も明星は0。\nそして9回の裏に津久見が1点を入れた。"}, {"t": 283.18333333333334, "x": "1対0のサヨナラだ。これで4つ目になる。"}, {"t": 286.06666666666666, "x": "1点しか取っていないのに、勝っちゃったのね。"}, {"t": 288.85, "x": "準決勝は奈良の天理だ。"}, {"t": 290.4, "x": "1回に天理が2点を先に入れた。"}, {"t": 292.6166666666667, "x": "津久見は3回と6回と7回に1点ずつ。"}, {"t": 295.28333333333336, "x": "8回に2点を足して5対3で勝った。"}, {"t": 297.8, "x": "決勝は山口の柳井に3対1だ。"}, {"t": 300.03333333333336, "x": "2回と3回の3点を守り切った。"}, {"t": 302.45, "x": "日本高野連の大会小史はこの夏を\n中九州勢として初優勝と書いている。"}, {"t": 307.43333333333334, "x": "春と夏の両方の優勝旗が、大分に来たってことよ。"}, {"t": 310.98333333333335, "x": "スポーツ新聞の記事でも、\n夏の大分の優勝はこの1度だけだ。"}, {"t": 314.93333333333334, "x": "日本高野連の一覧で見ても、\nそのあとの優勝校に大分の学校は無い。"}, {"t": 320.03333333333336, "x": "あらためて、9試合の点を足すとどうなるの？"}, {"t": 322.81666666666666, "x": "記録のサイトから足してみた。"}, {"t": 324.51666666666665, "x": "取った点は34点、取られた点は11点だ。"}, {"t": 327.68333333333334, "x": "取った点のうち13点は苫小牧工との試合だ。"}, {"t": 330.8666666666667, "x": "その試合をのけると、ほかの8試合で21点か。"}, {"t": 334.25, "x": "そうなる。1試合あたりにすると3点に届かない。"}, {"t": 337.26666666666665, "x": "取られた点も少ない。"}, {"t": 338.53333333333336, "x": "春の4試合で4点、夏の5試合で7点だ。"}, {"t": 341.6333333333333, "x": "そして9つの勝ちのうち、1点差が5つ。"}, {"t": 344.4, "x": "春に3つ、夏に2つだ。"}, {"t": 346.46666666666664, "x": "残りの4つのうち3つは2点差。もう\n1つが苫小牧工との12点差だ。"}, {"t": 351.28333333333336, "x": "大きな差で勝ったのは1つだけなんだ。"}, {"t": 353.68333333333334, "x": "9回から先の点で決めたのは、春の報徳学園と\n高知高校、夏の鹿児島商と明星だ。"}, {"t": 359.76666666666665, "x": "延長が2つで、サヨナラが2つってわけね。"}, {"t": 362.76666666666665, "x": "ああ。延長の2つはどちらも表の1点で、\nサヨナラの2つはどちらも9回の裏だ。"}, {"t": 368.0, "x": "取った点は少なくても、最後に1点を取れたのね。"}, {"t": 371.81666666666666, "x": "優勝のあとも、津久見はよく甲子園に来ていたの？"}, {"t": 374.95, "x": "記録のサイトでは甲子園は春6度と\n夏12度で、合わせて18度だ。"}, {"t": 379.31666666666666, "x": "2018年のスポーツ新聞の記事では、\n夏の16勝は大分の学校でいちばん多い。"}, {"t": 384.6333333333333, "x": "夏の12度の出場は大分商に次ぐ2番目だ。"}, {"t": 387.6666666666667, "x": "優勝の2大会をのけると16大会。"}, {"t": 390.03333333333336, "x": "勝ちは15、負けは16になる。"}, {"t": 392.3333333333333, "x": "負けが1つも無いのは、優勝の2大会だけなのね。"}, {"t": 395.73333333333335, "x": "そうだ。夏は1977年と1981年と1982年にも出ている。"}, {"t": 401.95, "x": "1985年は春と夏の両方に出た。"}, {"t": 405.01666666666665, "x": "1988年も春と夏の両方に\n出て、どちらも8強まで進んだ。"}, {"t": 409.98333333333335, "x": "その夏は南北海道の札幌開成に4対1、\n岐阜の大垣商に1対0で勝った。"}, {"t": 415.45, "x": "準々決勝は広島の広島商に0対5で負けている。"}, {"t": 419.1333333333333, "x": "同じ年に2度も8強なんて、すごいわ。"}, {"t": 421.8666666666667, "x": "ところが日本高野連の一覧では、この1988年の夏を\n最後に津久見の名前が出てこない。"}, {"t": 428.2, "x": "記録のサイトでも、春の最後は同じ1988年だ。"}, {"t": 432.4166666666667, "x": "それから、ずっと出ていないの？"}, {"t": 434.4166666666667, "x": "2026年の夏まで数えると38年になる。"}, {"t": 437.98333333333335, "x": "そのあいだに大分のほかの学校は、\n優勝に近づけたのかしら。"}, {"t": 441.98333333333335, "x": "春の決勝の一覧では、2021年の春に\n明豊が準優勝している。"}, {"t": 446.68333333333334, "x": "それでも優勝には届かなかった。"}, {"t": 448.6, "x": "大分の優勝は今も津久見の2度だけだ。"}, {"t": 451.78333333333336, "x": "その間に、学校に何かあったの？"}, {"t": 454.1666666666667, "x": "2008年に大分県が出した計画の案に、\n津久見高校の名前がある。"}, {"t": 458.6, "x": "臼杵商業高校と海洋科学高校と津久見高校を\n1つにまとめる、と書いてある。"}, {"t": 463.5833333333333, "x": "場所は津久見高校のところだ。"}, {"t": 465.46666666666664, "x": "普通と工業と商業の組を2つずつ、1学年に\n6つの組ほどの学校にする案だった。"}, {"t": 471.18333333333334, "x": "3つの学校が1つになるってこと？"}, {"t": 473.6333333333333, "x": "そうだ。今の津久見高校の資料では、\n新しい学校ができたのは2011年の10月だ。"}, {"t": 479.23333333333335, "x": "2012年の4月に開校式と最初の入学式があった。"}, {"t": 483.05, "x": "今は普通科と生産機械科と電気電子科、\nそれに地域みらいビジネス科がある。"}, {"t": 487.9, "x": "名前は同じ津久見高校でも、\n新しい学校になったのね。"}, {"t": 491.6166666666667, "x": "ああ。学校の紹介のサイトにも3つの学校が\nまとまって2012年に開校したとある。"}, {"t": 496.9, "x": "計画には中学校を卒業する\n人の数の移り変わりを見て決めた、とも書いてある。"}, {"t": 501.8833333333333, "x": "津久見市の14歳までの子どもは\n2020年には1420人だった。"}, {"t": 506.55, "x": "1960年の1万2861人の、9分の1くらいだわ。"}, {"t": 512.1666666666666, "x": "新しい津久見高校の野球部は、どうしているの？"}, {"t": 515.2, "x": "高校野球の情報サイトでは、\n2026年の夏の大分大会で決勝まで進んでいる。"}, {"t": 520.6666666666666, "x": "決勝は7月25日だった。"}, {"t": 522.85, "x": "相手は大分商。2対6で負けて、\n甲子園には届かなかった。"}, {"t": 526.9166666666666, "x": "あと1つ勝てば、38年ぶりだったんだ。"}, {"t": 529.9833333333333, "x": "そうだ。そして1967年の夏の大分の代表も、\n大分商だった。"}, {"t": 535.15, "x": "春に優勝した年の夏と\n同じ学校の名前が出てくるのね。"}, {"t": 539.4833333333333, "x": "まとめると、津久見ってどんな学校なの？"}, {"t": 542.0666666666667, "x": "石灰石の町の県立高校で、\n1952年に夏の甲子園に初めて来た。"}, {"t": 547.4833333333333, "x": "1967年の春と1972年の夏に\n優勝して、9試合で負けなしだ。"}, {"t": 553.45, "x": "どうやって、その9試合を勝ち切ったの？"}, {"t": 556.05, "x": "大きな差で勝ったのは1試合だけ。"}, {"t": 557.95, "x": "1点差が5つあった。"}, {"t": 559.5166666666667, "x": "延長の2試合は表の1点で、\n9回の裏の2試合はサヨナラで決めた。"}, {"t": 563.9, "x": "終わりぎわの1点で、\n9つの勝ちの半分近くが決まったわけか。"}, {"t": 568.0833333333334, "x": "そうだ。そして大分の学校の甲子園の優勝は、\n今もこの2つだけだ。"}, {"t": 572.6166666666667, "x": "学校は2012年に新しくなって、\n2026年の夏は大分大会の決勝まで来た。"}, {"t": 578.55, "x": "次に一覧に津久見の名前が出たら、\n9回からの点を見てみたいわ。"}, {"t": 582.7333333333333, "x": "その時は、今日の4つの勝ちと比べてみよう。"}, {"t": 585.6666666666666, "x": "見てくれてありがとう。"}, {"t": 586.7666666666667, "x": "次の回も、登録して待っていてもらえるとうれしいわ。"}], "w": 720, "h": 405, "n_cuts": 0, "noimage": true};
+const a=document.getElementById('a');
+const now=document.getElementById('now'), nl=document.getElementById('nextline');
+const pp=document.getElementById('pp'), sk=document.getElementById('sk');
+const tm=document.getElementById('tm'), bdg=document.getElementById('bdg');
+const SMOOTH=matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth';
+document.getElementById('ttl').innerHTML=D.name+
+  '<span class="meta">'+fmt(D.dur)+'　字幕'+D.subs.length+'　（音声＋字幕だけ）</span>';
+
+function fmt(s){s=Math.max(0,s|0);return (s/60|0)+':'+String(s%60).padStart(2,'0')}
+function subIdx(t){let lo=0,hi=D.subs.length-1,r=-1;
+  while(lo<=hi){const m=(lo+hi)>>1; if(D.subs[m].t<=t){r=m;lo=m+1}else hi=m-1} return r}
+
+let cur=-2;
+function paint(t){
+  const i=subIdx(t);
+  if(i!==cur){cur=i;
+    now.textContent = i<0 ? (D.subs.length?'（ここはまだ字幕がありません）'
+                                          :'（この回に字幕はありません）')
+                         : D.subs[i].x;
+    const n=D.subs[i+1]; nl.textContent = n ? '次　'+n.x : '';
+    bdg.textContent = D.subs.length ? '字幕 '+(i+1)+' / '+D.subs.length : '字幕なし';
+    mark('subs',i);
+  }
+  tm.textContent=fmt(t)+' / '+fmt(D.dur);
+  if(!sk.dragging) sk.value=Math.round(t/D.dur*1000);
+}
+function mark(pane,i){
+  const el=document.getElementById(pane);
+  if(el.dataset.on==i) return; el.dataset.on=i;
+  el.querySelectorAll('.on').forEach(x=>x.classList.remove('on'));
+  const t=el.children[i]; if(!t) return; t.classList.add('on');
+  if(!el.hidden){const r=t.offsetTop-el.clientHeight/2; el.scrollTo({top:r,behavior:SMOOTH})}
+}
+
+D.subs.forEach(s=>{const d=document.createElement('div');d.className='row';
+  d.innerHTML='<b></b><span></span>';
+  d.querySelector('b').textContent=fmt(s.t);
+  d.querySelector('span').textContent=s.x;
+  d.onclick=()=>go(s.t); document.getElementById('subs').appendChild(d)});
+const mk=document.getElementById('mk');
+D.subs.forEach(s=>{const i=document.createElement('i');
+  i.style.left=(s.t/D.dur*100)+'%'; mk.appendChild(i)});
+
+function go(t){a.currentTime=Math.min(Math.max(0,t)+0.01,Math.max(0.05,D.dur-0.05)); paint(a.currentTime)}
+pp.onclick=()=>a.paused?a.play():a.pause();
+const SPEEDS=[1,1.25,1.5,1.75,2,3,0.75],SPN=['等速','1.25倍','1.5倍','1.75倍','2倍','3倍','0.75倍'];
+let si=0; const sp=document.getElementById('sp');
+sp.onclick=()=>{si=(si+1)%SPEEDS.length; a.playbackRate=SPEEDS[si];
+  a.preservesPitch=a.mozPreservesPitch=a.webkitPreservesPitch=true; sp.textContent=SPN[si]};
+a.onplay=()=>pp.textContent='❚❚ 停止'; a.onpause=()=>pp.textContent='▶ 再生';
+a.ontimeupdate=()=>paint(a.currentTime);
+sk.oninput=()=>{sk.dragging=1; go(sk.value/1000*D.dur)};
+sk.onchange=()=>sk.dragging=0;
+document.getElementById('pv').onclick=()=>{const i=subIdx(a.currentTime);
+  go(i>0?D.subs[i-1].t:0)};
+document.getElementById('nx').onclick=()=>{const i=subIdx(a.currentTime);
+  if(i+1<D.subs.length) go(D.subs[i+1].t)};
+addEventListener('keydown',e=>{const k=e.key;
+  if(k===' '){e.preventDefault();pp.onclick()}
+  else if(k==='ArrowRight')go(a.currentTime+5); else if(k==='ArrowLeft')go(a.currentTime-5);
+  else if(k==='ArrowDown'){e.preventDefault();document.getElementById('nx').onclick()}
+  else if(k==='ArrowUp'){e.preventDefault();document.getElementById('pv').onclick()}
+  else if(k==='s'||k==='S')sp.onclick()});
+paint(0);
+</script>
